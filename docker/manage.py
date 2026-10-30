@@ -39,7 +39,7 @@ def graph():
 def bootstrap():
     with psycopg.connect(os.environ['GIWG_PG_DSN']) as pg:
         tables=pg.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'").fetchone()[0]
-        if tables<50:raise RuntimeError('GIWG v1.2 SQL initialization is incomplete; inspect PostgreSQL logs')
+        if tables<50:raise RuntimeError('GIWG SQL initialization is incomplete; inspect PostgreSQL logs')
         pg.execute('SELECT 1 FROM workflow_transition LIMIT 1').fetchone()
     text=(SOURCE/'GIWG_Schema_Neo4j.cypher').read_text()
     text='\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('//'))

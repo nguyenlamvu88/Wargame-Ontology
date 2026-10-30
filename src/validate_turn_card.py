@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a v1.2 turn card and, optionally, its transition from a prior card."""
+"""Validate a turn card and, optionally, its transition from a prior card."""
 import argparse
 from copy import deepcopy
 from datetime import datetime

@@ -1,12 +1,14 @@
+-- GIWG initial database installation. Run once against an empty database.
+BEGIN;
 -- =============================================================================
 
 -- GIWG Physical Data Schema (PostgreSQL)
 
--- Derived from: GIWG Ontology, Turn Process v21, Integrated Requirements v2
+-- Derived from: GIWG ontology, turn process and requirements
 
 -- Companion: GIWG_Data_Dictionary_and_Schema.xlsx
 
--- Version: 1.1 | 2026-10-29 | UNCLASSIFIED
+-- Initial implementation | UNCLASSIFIED
 
 -- =============================================================================
 
@@ -28,13 +30,9 @@
 
 -- =============================================================================
 
-
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -48,15 +46,11 @@ CREATE TYPE turn_status AS ENUM (
 
 );
 
-
-
 CREATE TYPE package_receipt_status AS ENUM (
 
   'draft', 'submitted', 'locked', 'accepted', 'returned'
 
 );
-
-
 
 CREATE TYPE rfi_status AS ENUM (
 
@@ -64,15 +58,11 @@ CREATE TYPE rfi_status AS ENUM (
 
 );
 
-
-
 CREATE TYPE rfi_priority AS ENUM (
 
   'low', 'medium', 'high', 'urgent'
 
 );
-
-
 
 CREATE TYPE adjudication_track AS ENUM (
 
@@ -80,15 +70,11 @@ CREATE TYPE adjudication_track AS ENUM (
 
 );
 
-
-
 CREATE TYPE adjudication_case_status AS ENUM (
 
   'open', 'in_progress', 'resolved', 'reopened'
 
 );
-
-
 
 CREATE TYPE success_level AS ENUM (
 
@@ -96,15 +82,11 @@ CREATE TYPE success_level AS ENUM (
 
 );
 
-
-
 CREATE TYPE role_type AS ENUM (
 
   'player', 'adjudicator', 'control', 'analyst', 'director'
 
 );
-
-
 
 CREATE TYPE interface_type AS ENUM (
 
@@ -112,15 +94,11 @@ CREATE TYPE interface_type AS ENUM (
 
 );
 
-
-
 CREATE TYPE interface_direction AS ENUM (
 
   'into_main', 'from_main', 'bidirectional'
 
 );
-
-
 
 CREATE TYPE artifact_type AS ENUM (
 
@@ -130,15 +108,11 @@ CREATE TYPE artifact_type AS ENUM (
 
 );
 
-
-
 CREATE TYPE action_class AS ENUM (
 
   'Action', 'MilitaryAction', 'CombatAction'
 
 );
-
-
 
 CREATE TYPE move_status AS ENUM (
 
@@ -146,23 +120,17 @@ CREATE TYPE move_status AS ENUM (
 
 );
 
-
-
 CREATE TYPE game_status AS ENUM (
 
   'planned', 'active', 'closed'
 
 );
 
-
-
 CREATE TYPE instrument_category AS ENUM (
 
   'diplomatic', 'information', 'military', 'economic', 'other'
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -194,8 +162,6 @@ CREATE TABLE giwg_game (
 
 );
 
-
-
 CREATE TABLE scenario (
 
   scenario_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -213,8 +179,6 @@ CREATE TABLE scenario (
 );
 
 CREATE INDEX idx_scenario_game ON scenario(game_id);
-
-
 
 CREATE TABLE rule_set (
 
@@ -236,8 +200,6 @@ CREATE TABLE rule_set (
 
 );
 
-
-
 -- -----------------------------------------------------------------------------
 
 -- ACTORS & PARTICIPANTS
@@ -258,8 +220,6 @@ CREATE TABLE participant (
 
 );
 
-
-
 CREATE TABLE role (
 
   role_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -274,8 +234,6 @@ CREATE TABLE role (
 
 );
 
-
-
 CREATE TABLE participant_role (
 
   participant_id    UUID NOT NULL REFERENCES participant(participant_id),
@@ -289,8 +247,6 @@ CREATE TABLE participant_role (
   PRIMARY KEY (participant_id, role_id, game_id)
 
 );
-
-
 
 CREATE TABLE player_team (
 
@@ -310,8 +266,6 @@ CREATE TABLE player_team (
 
 CREATE INDEX idx_player_team_game ON player_team(game_id);
 
-
-
 CREATE TABLE team_member (
 
   team_id           UUID NOT NULL REFERENCES player_team(team_id),
@@ -323,8 +277,6 @@ CREATE TABLE team_member (
   PRIMARY KEY (team_id, participant_id)
 
 );
-
-
 
 CREATE TABLE actor (
 
@@ -350,8 +302,6 @@ CREATE TABLE actor (
 
 );
 
-
-
 CREATE TABLE team_actor (
 
   team_id           UUID NOT NULL REFERENCES player_team(team_id),
@@ -363,8 +313,6 @@ CREATE TABLE team_actor (
   PRIMARY KEY (team_id, actor_id, relationship)
 
 );
-
-
 
 CREATE TABLE capability (
 
@@ -379,8 +327,6 @@ CREATE TABLE capability (
   constraints       TEXT
 
 );
-
-
 
 CREATE TABLE actor_relationship (
 
@@ -401,8 +347,6 @@ CREATE TABLE actor_relationship (
   confidence        VARCHAR(30)
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -438,8 +382,6 @@ CREATE TABLE turn (
 
 CREATE INDEX idx_turn_game ON turn(game_id);
 
-
-
 CREATE TABLE turn_stage (
 
   stage_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -463,8 +405,6 @@ CREATE TABLE turn_stage (
   UNIQUE (turn_id, stage_type)
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -498,15 +438,11 @@ CREATE TABLE world_state (
 
 CREATE INDEX idx_world_state_game ON world_state(game_id);
 
-
-
 ALTER TABLE turn
 
   ADD CONSTRAINT fk_turn_resulting_state
 
   FOREIGN KEY (resulting_state_id) REFERENCES world_state(world_state_id);
-
-
 
 CREATE TABLE perceived_situation (
 
@@ -525,8 +461,6 @@ CREATE TABLE perceived_situation (
   as_of             TIMESTAMPTZ NOT NULL DEFAULT now()
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -586,8 +520,6 @@ CREATE TABLE information_artifact (
 
 CREATE INDEX idx_artifact_game_type ON information_artifact(game_id, artifact_type);
 
-
-
 CREATE TABLE artifact_chunk (
 
   chunk_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -612,8 +544,6 @@ CREATE TABLE artifact_chunk (
 
 CREATE INDEX idx_chunk_artifact ON artifact_chunk(artifact_id);
 
-
-
 CREATE TABLE information_release (
 
   release_id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -634,8 +564,6 @@ CREATE TABLE information_release (
 
 );
 
-
-
 CREATE TABLE release_artifact (
 
   release_id        UUID NOT NULL REFERENCES information_release(release_id),
@@ -646,8 +574,6 @@ CREATE TABLE release_artifact (
 
 );
 
-
-
 CREATE TABLE release_audience (
 
   release_id        UUID NOT NULL REFERENCES information_release(release_id),
@@ -657,8 +583,6 @@ CREATE TABLE release_audience (
   PRIMARY KEY (release_id, team_id)
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -680,8 +604,6 @@ CREATE TABLE strategic_objective (
 
 );
 
-
-
 CREATE TABLE decision (
 
   decision_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -702,8 +624,6 @@ CREATE TABLE decision (
 
 );
 
-
-
 CREATE TABLE decision_objective (
 
   decision_id       UUID NOT NULL REFERENCES decision(decision_id),
@@ -713,8 +633,6 @@ CREATE TABLE decision_objective (
   PRIMARY KEY (decision_id, objective_id)
 
 );
-
-
 
 CREATE TABLE turn_submission_package (
 
@@ -742,8 +660,6 @@ CREATE TABLE turn_submission_package (
 
 CREATE INDEX idx_package_turn_team ON turn_submission_package(turn_id, submitting_team_id);
 
-
-
 CREATE TABLE move (
 
   move_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -767,8 +683,6 @@ CREATE TABLE move (
 CREATE INDEX idx_move_turn ON move(turn_id);
 
 CREATE INDEX idx_move_package ON move(package_id);
-
-
 
 CREATE TABLE action (
 
@@ -810,8 +724,6 @@ CREATE TABLE action (
 
 CREATE INDEX idx_action_move ON action(move_id);
 
-
-
 CREATE TABLE instrument_of_power (
 
   iop_id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -825,8 +737,6 @@ CREATE TABLE instrument_of_power (
   responsible_actor_id UUID REFERENCES actor(actor_id)
 
 );
-
-
 
 CREATE TABLE dependency (
 
@@ -848,8 +758,6 @@ CREATE TABLE dependency (
 
 );
 
-
-
 CREATE TABLE risk (
 
   risk_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -870,8 +778,6 @@ CREATE TABLE risk (
 
 );
 
-
-
 CREATE TABLE desired_effect (
 
   desired_effect_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -890,8 +796,6 @@ CREATE TABLE desired_effect (
 
 );
 
-
-
 CREATE TABLE package_artifact (
 
   package_id        UUID NOT NULL REFERENCES turn_submission_package(package_id),
@@ -902,8 +806,6 @@ CREATE TABLE package_artifact (
 
 );
 
-
-
 CREATE TABLE move_artifact (
 
   move_id           UUID NOT NULL REFERENCES move(move_id),
@@ -913,8 +815,6 @@ CREATE TABLE move_artifact (
   PRIMARY KEY (move_id, artifact_id)
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -929,8 +829,6 @@ CREATE TABLE rfi (
   requesting_team_id    UUID NOT NULL REFERENCES player_team(team_id),
 
   turn_id               UUID REFERENCES turn(turn_id),
-
-  related_move_id       UUID REFERENCES move(move_id),
 
   question              TEXT NOT NULL,
 
@@ -958,8 +856,6 @@ CREATE INDEX idx_rfi_team ON rfi(requesting_team_id);
 
 CREATE INDEX idx_rfi_owner ON rfi(owner_participant_id);
 
-
-
 CREATE TABLE rfi_response (
 
   response_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -977,8 +873,6 @@ CREATE TABLE rfi_response (
   responded_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -1001,8 +895,6 @@ CREATE TABLE adjudication_method (
   UNIQUE (type, version)
 
 );
-
-
 
 CREATE TABLE adjudication_case (
 
@@ -1036,8 +928,6 @@ CREATE INDEX idx_case_move ON adjudication_case(move_id);
 
 CREATE INDEX idx_case_status ON adjudication_case(status);
 
-
-
 CREATE TABLE case_evidence (
 
   case_id           UUID NOT NULL REFERENCES adjudication_case(case_id),
@@ -1047,8 +937,6 @@ CREATE TABLE case_evidence (
   PRIMARY KEY (case_id, artifact_id)
 
 );
-
-
 
 CREATE TABLE combat_resolution_request (
 
@@ -1067,8 +955,6 @@ CREATE TABLE combat_resolution_request (
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 
 );
-
-
 
 CREATE TABLE ms_run (
 
@@ -1089,8 +975,6 @@ CREATE TABLE ms_run (
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 
 );
-
-
 
 CREATE TABLE combat_results_support (
 
@@ -1118,8 +1002,6 @@ CREATE TABLE combat_results_support (
 
 CREATE INDEX idx_crs_team ON combat_results_support(receiving_team_id);
 
-
-
 CREATE TABLE outcome (
 
   outcome_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1138,8 +1020,6 @@ CREATE TABLE outcome (
 
 );
 
-
-
 CREATE TABLE effect (
 
   effect_id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1157,8 +1037,6 @@ CREATE TABLE effect (
   duration              VARCHAR(50)
 
 );
-
-
 
 CREATE TABLE state_transition (
 
@@ -1180,8 +1058,6 @@ CREATE INDEX idx_transition_from ON state_transition(from_state_id);
 
 CREATE INDEX idx_transition_to ON state_transition(to_state_id);
 
-
-
 CREATE TABLE transition_effect (
 
   transition_id     UUID NOT NULL REFERENCES state_transition(transition_id),
@@ -1191,8 +1067,6 @@ CREATE TABLE transition_effect (
   PRIMARY KEY (transition_id, effect_id)
 
 );
-
-
 
 -- -----------------------------------------------------------------------------
 
@@ -1236,8 +1110,6 @@ CREATE INDEX idx_event_game_turn ON game_event(game_id, turn_id);
 
 CREATE INDEX idx_event_type ON game_event(event_type);
 
-
-
 -- -----------------------------------------------------------------------------
 
 -- COMPARTMENTED / PARALLEL ACTIVITIES
@@ -1268,8 +1140,6 @@ CREATE TABLE compartmented_interface (
 
 );
 
-
-
 -- -----------------------------------------------------------------------------
 
 -- HELPER VIEWS (optional but useful)
@@ -1288,8 +1158,6 @@ LEFT JOIN participant p ON p.participant_id = r.owner_participant_id
 
 WHERE r.status IN ('open', 'assigned', 'escalated');
 
-
-
 CREATE OR REPLACE VIEW v_current_world_state AS
 
 SELECT DISTINCT ON (game_id) *
@@ -1299,8 +1167,6 @@ FROM world_state
 WHERE is_published = true
 
 ORDER BY game_id, published_at DESC NULLS LAST, created_at DESC;
-
-
 
 CREATE OR REPLACE VIEW v_turn_submission_status AS
 
@@ -1336,8 +1202,6 @@ LEFT JOIN turn_submission_package p
 
 WHERE pt.game_id = t.game_id;
 
-
-
 -- -----------------------------------------------------------------------------
 
 -- COMMENTS (data dictionary lite)
@@ -1360,444 +1224,14 @@ COMMENT ON TABLE compartmented_interface IS 'Controlled interface between parall
 
 COMMENT ON TABLE game_event IS 'Provenance spine — significant occurrences with optional links to packages, cases, releases, transitions, RFIs';
 
-
-
 -- -----------------------------------------------------------------------------
 
--- IMMUTABILITY & STATE-MACHINE TRIGGERS (Enforces SCHEMA_README.md rules)
-
--- -----------------------------------------------------------------------------
-
-
-
--- 1. Published WorldState Immutability
-
-CREATE OR REPLACE FUNCTION trg_enforce_world_state_immutability()
-
-RETURNS TRIGGER AS $$
-
-BEGIN
-
-  IF TG_OP = 'DELETE' THEN
-
-    IF OLD.is_published THEN
-
-      RAISE EXCEPTION 'Immutability violation: published WorldState (%) cannot be deleted.', OLD.world_state_id;
-
-    END IF;
-
-    RETURN OLD;
-
-  END IF;
-
-
-
-  IF OLD.is_published THEN
-
-    RAISE EXCEPTION 'Immutability violation: WorldState (%) is already published. Create a new version and StateTransition instead.', OLD.world_state_id;
-
-  END IF;
-
-
-
-  IF NEW.is_published AND NOT OLD.is_published AND NEW.published_at IS NULL THEN
-
-    NEW.published_at := now();
-
-  END IF;
-
-
-
-  RETURN NEW;
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER enforce_world_state_immutability
-
-BEFORE UPDATE OR DELETE ON world_state
-
-FOR EACH ROW EXECUTE FUNCTION trg_enforce_world_state_immutability();
-
-
-
--- 2. TurnSubmissionPackage State-Transition & Locked/Accepted Immutability
-
-CREATE OR REPLACE FUNCTION trg_enforce_package_immutability_and_transitions()
-
-RETURNS TRIGGER AS $$
-
-BEGIN
-
-  IF TG_OP = 'DELETE' THEN
-
-    IF OLD.receipt_status IN ('locked', 'accepted') THEN
-
-      RAISE EXCEPTION 'Immutability violation: TurnSubmissionPackage (%) in status "%" cannot be deleted.',
-
-        OLD.package_id, OLD.receipt_status;
-
-    END IF;
-
-    RETURN OLD;
-
-  END IF;
-
-
-
-  IF NEW.receipt_status <> OLD.receipt_status THEN
-
-    IF NOT (
-
-      (OLD.receipt_status = 'draft'     AND NEW.receipt_status = 'submitted') OR
-
-      (OLD.receipt_status = 'submitted' AND NEW.receipt_status IN ('locked', 'returned')) OR
-
-      (OLD.receipt_status = 'returned'  AND NEW.receipt_status = 'submitted') OR
-
-      (OLD.receipt_status = 'locked'    AND NEW.receipt_status = 'accepted')
-
-    ) THEN
-
-      RAISE EXCEPTION 'Invalid package receipt_status transition from "%" to "%" for package %.',
-
-        OLD.receipt_status, NEW.receipt_status, OLD.package_id;
-
-    END IF;
-
-  END IF;
-
-
-
-  IF OLD.receipt_status IN ('locked', 'accepted') THEN
-
-    IF OLD.receipt_status = 'accepted' OR NEW.receipt_status <> 'accepted' OR
-
-       NEW.turn_id IS DISTINCT FROM OLD.turn_id OR
-
-       NEW.submitting_team_id IS DISTINCT FROM OLD.submitting_team_id OR
-
-       NEW.revision IS DISTINCT FROM OLD.revision OR
-
-       NEW.schema_version IS DISTINCT FROM OLD.schema_version OR
-
-       NEW.submitted_at IS DISTINCT FROM OLD.submitted_at OR
-
-       NEW.locked_at IS DISTINCT FROM OLD.locked_at OR
-
-       NEW.notes IS DISTINCT FROM OLD.notes
-
-    THEN
-
-      RAISE EXCEPTION 'Immutability violation: TurnSubmissionPackage (%) is "%" and cannot be content-updated. Create a new revision or package_id.',
-
-        OLD.package_id, OLD.receipt_status;
-
-    END IF;
-
-  END IF;
-
-
-
-  IF NEW.receipt_status = 'submitted' AND OLD.receipt_status <> 'submitted' AND NEW.submitted_at IS NULL THEN
-
-    NEW.submitted_at := now();
-
-  END IF;
-
-  IF NEW.receipt_status = 'locked' AND OLD.receipt_status <> 'locked' AND NEW.locked_at IS NULL THEN
-
-    NEW.locked_at := now();
-
-  END IF;
-
-
-
-  RETURN NEW;
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER enforce_package_immutability
-
-BEFORE UPDATE OR DELETE ON turn_submission_package
-
-FOR EACH ROW EXECUTE FUNCTION trg_enforce_package_immutability_and_transitions();
-
-
-
--- 2b. Protect Child Moves & Actions of Locked/Accepted Packages
-
-CREATE OR REPLACE FUNCTION trg_protect_locked_package_children()
-
-RETURNS TRIGGER AS $$
-
-DECLARE
-
-  v_pkg_id UUID;
-
-  v_status package_receipt_status;
-
-BEGIN
-
-  IF TG_TABLE_NAME = 'move' THEN
-
-    v_pkg_id := COALESCE(NEW.package_id, OLD.package_id);
-
-  ELSIF TG_TABLE_NAME = 'action' THEN
-
-    SELECT package_id INTO v_pkg_id FROM move WHERE move_id = COALESCE(NEW.move_id, OLD.move_id);
-
-  END IF;
-
-
-
-  IF v_pkg_id IS NOT NULL THEN
-
-    SELECT receipt_status INTO v_status FROM turn_submission_package WHERE package_id = v_pkg_id;
-
-    IF v_status IN ('locked', 'accepted') THEN
-
-      IF TG_TABLE_NAME = 'move' AND TG_OP = 'UPDATE' AND
-
-         NEW.package_id IS NOT DISTINCT FROM OLD.package_id AND
-
-         NEW.team_id IS NOT DISTINCT FROM OLD.team_id AND
-
-         NEW.turn_id IS NOT DISTINCT FROM OLD.turn_id AND
-
-         NEW.version IS NOT DISTINCT FROM OLD.version AND
-
-         NEW.decision_id IS NOT DISTINCT FROM OLD.decision_id AND
-
-         NEW.status IN ('under_adjudication', 'resolved')
-
-      THEN
-
-        RETURN NEW;
-
-      END IF;
-
-
-
-      RAISE EXCEPTION 'Immutability violation: parent TurnSubmissionPackage (%) is "%"; cannot modify % content.',
-
-        v_pkg_id, v_status, TG_TABLE_NAME;
-
-    END IF;
-
-  END IF;
-
-
-
-  RETURN COALESCE(NEW, OLD);
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER protect_locked_package_moves
-
-BEFORE INSERT OR UPDATE OR DELETE ON move
-
-FOR EACH ROW EXECUTE FUNCTION trg_protect_locked_package_children();
-
-
-
-CREATE TRIGGER protect_locked_package_actions
-
-BEFORE INSERT OR UPDATE OR DELETE ON action
-
-FOR EACH ROW EXECUTE FUNCTION trg_protect_locked_package_children();
-
-
-
--- 3. Resolved AdjudicationCase Immutability & Explicit Reopen + GameEvent Audit
-
-CREATE OR REPLACE FUNCTION trg_enforce_adjudication_case_immutability()
-
-RETURNS TRIGGER AS $$
-
-DECLARE
-
-  v_has_reopen_event BOOLEAN;
-
-BEGIN
-
-  IF TG_OP = 'DELETE' AND OLD.status = 'resolved' THEN
-
-    RAISE EXCEPTION 'Immutability violation: resolved AdjudicationCase (%) cannot be deleted.', OLD.case_id;
-
-  END IF;
-
-
-
-  IF TG_OP = 'UPDATE' AND OLD.status = 'resolved' THEN
-
-    IF NEW.status <> 'reopened' THEN
-
-      RAISE EXCEPTION 'Immutability violation: AdjudicationCase (%) is resolved. Must explicitly transition status to "reopened" before modifying.',
-
-        OLD.case_id;
-
-    END IF;
-
-
-
-    SELECT EXISTS (
-
-      SELECT 1 FROM game_event
-
-      WHERE related_case_id = OLD.case_id
-
-        AND event_type = 'case_reopened'
-
-        AND recorded_at >= now() - INTERVAL '5 minutes'
-
-    ) INTO v_has_reopen_event;
-
-
-
-    IF NOT v_has_reopen_event THEN
-
-      RAISE EXCEPTION 'Audit violation: reopening AdjudicationCase (%) requires logging a game_event with event_type = "case_reopened" and related_case_id = %.',
-
-        OLD.case_id, OLD.case_id;
-
-    END IF;
-
-  END IF;
-
-
-
-  IF TG_OP = 'UPDATE' AND NEW.status = 'resolved' AND OLD.status <> 'resolved' AND NEW.resolved_at IS NULL THEN
-
-    NEW.resolved_at := now();
-
-  END IF;
-
-
-
-  RETURN NEW;
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER enforce_adjudication_case_immutability
-
-BEFORE UPDATE OR DELETE ON adjudication_case
-
-FOR EACH ROW EXECUTE FUNCTION trg_enforce_adjudication_case_immutability();
-
-
-
--- 3b. Protect Outcomes & Effects of Resolved AdjudicationCases
-
-CREATE OR REPLACE FUNCTION trg_protect_resolved_case_outcomes()
-
-RETURNS TRIGGER AS $$
-
-DECLARE
-
-  v_case_id UUID;
-
-  v_status adjudication_case_status;
-
-BEGIN
-
-  IF TG_TABLE_NAME = 'outcome' THEN
-
-    v_case_id := COALESCE(NEW.case_id, OLD.case_id);
-
-  ELSIF TG_TABLE_NAME = 'effect' THEN
-
-    SELECT case_id INTO v_case_id FROM outcome WHERE outcome_id = COALESCE(NEW.outcome_id, OLD.outcome_id);
-
-  END IF;
-
-
-
-  IF v_case_id IS NOT NULL THEN
-
-    SELECT status INTO v_status FROM adjudication_case WHERE case_id = v_case_id;
-
-    IF v_status = 'resolved' THEN
-
-      RAISE EXCEPTION 'Immutability violation: parent AdjudicationCase (%) is resolved. Reopen the case with a GameEvent before modifying %.',
-
-        v_case_id, TG_TABLE_NAME;
-
-    END IF;
-
-  END IF;
-
-
-
-  RETURN COALESCE(NEW, OLD);
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER protect_resolved_case_outcomes
-
-BEFORE INSERT OR UPDATE OR DELETE ON outcome
-
-FOR EACH ROW EXECUTE FUNCTION trg_protect_resolved_case_outcomes();
-
-
-
-CREATE TRIGGER protect_resolved_case_effects
-
-BEFORE INSERT OR UPDATE OR DELETE ON effect
-
-FOR EACH ROW EXECUTE FUNCTION trg_protect_resolved_case_outcomes();
-
-
-
--- End of GIWG PostgreSQL schema v1.1
-
--- GIWG v1.2. Apply once to a normalized v1.1 schema in a maintenance window.
--- Transaction aborts on incompatible existing data; it never silently repairs history.
-BEGIN;
-DROP TRIGGER enforce_world_state_immutability ON world_state;
-DROP TRIGGER enforce_package_immutability ON turn_submission_package;
-DROP TRIGGER protect_locked_package_moves ON move;
-DROP TRIGGER protect_locked_package_actions ON action;
-DROP TRIGGER enforce_adjudication_case_immutability ON adjudication_case;
-DROP TRIGGER protect_resolved_case_outcomes ON outcome;
-DROP TRIGGER protect_resolved_case_effects ON effect;
-DROP FUNCTION trg_enforce_world_state_immutability();
-DROP FUNCTION trg_enforce_package_immutability_and_transitions();
-DROP FUNCTION trg_protect_locked_package_children();
-DROP FUNCTION trg_enforce_adjudication_case_immutability();
-DROP FUNCTION trg_protect_resolved_case_outcomes();
-
+-- Associations, constraints and workflow enforcement.
 CREATE TABLE move_rfi (
  move_id uuid NOT NULL REFERENCES move(move_id),
  rfi_id uuid NOT NULL REFERENCES rfi(rfi_id),
  PRIMARY KEY(move_id,rfi_id)
 );
-INSERT INTO move_rfi SELECT related_move_id,rfi_id FROM rfi WHERE related_move_id IS NOT NULL;
-DROP VIEW v_open_rfis;
-ALTER TABLE rfi DROP COLUMN related_move_id;
-CREATE VIEW v_open_rfis AS SELECT r.*,t.name AS team_name,p.display_name AS owner_name
- FROM rfi r JOIN player_team t ON t.team_id=r.requesting_team_id
- LEFT JOIN participant p ON p.participant_id=r.owner_participant_id
- WHERE r.status IN ('open','assigned','escalated');
 CREATE TABLE outcome_desired_effect (
  outcome_id uuid NOT NULL REFERENCES outcome(outcome_id),
  desired_effect_id uuid NOT NULL REFERENCES desired_effect(desired_effect_id),

@@ -43,7 +43,7 @@ def serialize_row(row):
 
 def project_snapshot(tx,nodes,edges):
     # A write lock on a dedicated marker serializes concurrent ETL jobs.
-    tx.run("MERGE (p:GIWGProjectionControl {name:'giwg-v1.2'}) SET p.locked_at=datetime() ").consume()
+    tx.run("MERGE (p:GIWGProjectionControl {name:'giwg'}) SET p.locked_at=datetime() ").consume()
     # Do not detach-delete edges belonging to some other application.
     external=tx.run('MATCH (n:GIWGProjection)-[r]-() WHERE coalesce(r.giwg_projection,false)=false RETURN count(r) AS n').single()['n']
     if external:

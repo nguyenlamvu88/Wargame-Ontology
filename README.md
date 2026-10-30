@@ -2,7 +2,7 @@
 
 Repository for the GIWG wargame data model and implementation.
 
-The current foundation includes a corrected v1.2 schema, validation, graph
+The current foundation includes a initial schema, validation, graph
 projection and a local development stack. See [development roadmap](docs/ROADMAP.md)
 for application features still to build and [contributing](CONTRIBUTING.md) for
 change/test guidance.
@@ -120,8 +120,7 @@ containers. Normal shutdown and image rebuilds preserve it.
 
 The PostgreSQL initialization SQL runs only for a **new empty volume**. Editing
 that file and restarting a populated volume does not upgrade an existing schema.
-`src/migrate_v1_1_to_v1_2.sql` is for a separately managed v1.1 database; do not
-apply it to this already initialized v1.2 stack.
+This is the initial database installation; no previous-release migration is included.
 
 The setup scripts never overwrite an existing `.env`. Editing passwords in `.env`
 does not rotate credentials in populated database volumes; use database password
@@ -149,7 +148,7 @@ for a migration or on data you intend to preserve.
 - Python command entry points, valid-card validation and 38 unit/schema checks passed.
 - Demo SQL executed against PostgreSQL 18.6 via PGlite and completed the turn/package
   lifecycle with an authorized state transition.
-- The underlying implementation previously passed 47 PostgreSQL checks and 18 live
+- The underlying implementation previously passed 45 PostgreSQL checks and 18 live
   Neo4j Community 5.26.0 checks (see `src/TEST_RESULTS.md`).
 - **Docker Engine is not available in the authoring environment. The image build,
   actual Compose startup, image entrypoints/healthchecks and full containerized
@@ -173,7 +172,6 @@ is not an offline image bundle.
 ## Automated checks on GitHub
 
 The [GIWG checks workflow](.github/workflows/ci.yml) runs on pushes to main, pull
-requests, and manual dispatch. It tests contracts and migrations, builds the tools
+requests, and manual dispatch. It tests contracts and database constraints, builds the tools
 image, starts actual PostgreSQL/Neo4j containers, and runs the full smoke-test twice.
-Check the repository's **Actions** tab for the current result; a configured workflow
-is not a claim that the containerized test has already passed.
+Check the repository's **Actions** tab for the current result; the full containerized pipeline has passed on GitHub Actions.

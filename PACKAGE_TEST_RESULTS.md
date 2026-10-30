@@ -9,7 +9,7 @@ Passed:
   through PGlite: 1 game, 1 authorized state transition, closed turn, accepted package.
 
 Inherited implementation validation:
-- 47 PostgreSQL execution checks.
+- 45 PostgreSQL execution checks.
 - 18 live Neo4j 5.26.0 checks, 26 initial nodes and 38 initial relationships.
 
 Not executed: Docker image build, Compose container startup, healthchecks inside

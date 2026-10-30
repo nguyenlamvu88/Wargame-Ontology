@@ -1,8 +1,8 @@
-# GIWG v1.2 validation results
+# GIWG validation results
 
 Date: 30 October 2026
 
-## Executed PostgreSQL tests: 47 passed
+## Executed PostgreSQL tests: 45 passed
 
 Engine: PostgreSQL 18.6 through PGlite 0.5.13 (WebAssembly). Actual DDL, PL/pgSQL
 triggers, constraints, inserts, updates, deletes and graph source SELECTs executed
@@ -25,7 +25,6 @@ Covered:
 - Required RFI owner/response, and last-response deletion prevention.
 - SQL and Python transition matrix agreement.
 - Every graph edge source SELECT against the corrected SQL schema.
-- Upgrade from v1.1 with existing data: RFI links and dependent view preserved.
 
 ## Python/schema/graph-unit tests: 38 passed
 
@@ -82,4 +81,4 @@ access controls, document parsing, production scale, and reconciliation of the
 unprovided Excel dictionary/requirements document/ontology catalog.
 
 No claim of operational deployment readiness is made. The package is a tested
-prototype foundation, with an explicit migration and repeatable checks.
+initial implementation with repeatable checks.
