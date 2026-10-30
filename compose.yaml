@@ -1,39 +1,39 @@
-name: giwg
+name: wargame
 
 x-tool-image: &tool-image
-  image: giwg-tools:latest
+  image: wargame-tools:latest
   build:
     context: .
     dockerfile: Dockerfile
   init: true
   environment: &tool-environment
-    GIWG_PG_HOST: postgres
-    GIWG_PG_PORT: "5432"
-    GIWG_PG_DB: giwg
-    GIWG_PG_USER: giwg
-    GIWG_PG_PASSWORD: ${GIWG_POSTGRES_PASSWORD:?Run setup.ps1 or setup.sh first}
-    GIWG_NEO4J_URI: bolt://neo4j:7687
-    GIWG_NEO4J_USER: neo4j
-    GIWG_NEO4J_PASS: ${GIWG_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
-    GIWG_NEO4J_DATABASE: neo4j
+    WARGAME_PG_HOST: postgres
+    WARGAME_PG_PORT: "5432"
+    WARGAME_PG_DB: wargame
+    WARGAME_PG_USER: wargame
+    WARGAME_PG_PASSWORD: ${WARGAME_POSTGRES_PASSWORD:?Run setup.ps1 or setup.sh first}
+    WARGAME_NEO4J_URI: bolt://neo4j:7687
+    WARGAME_NEO4J_USER: neo4j
+    WARGAME_NEO4J_PASS: ${WARGAME_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
+    WARGAME_NEO4J_DATABASE: neo4j
 
 services:
   postgres:
     image: postgres:18.6-bookworm
     restart: unless-stopped
     environment:
-      POSTGRES_USER: giwg
-      POSTGRES_DB: giwg
-      POSTGRES_PASSWORD: ${GIWG_POSTGRES_PASSWORD:?Run setup.ps1 or setup.sh first}
+      POSTGRES_USER: wargame
+      POSTGRES_DB: wargame
+      POSTGRES_PASSWORD: ${WARGAME_POSTGRES_PASSWORD:?Run setup.ps1 or setup.sh first}
       PGDATA: /var/lib/postgresql/18/docker
     ports:
-      - "127.0.0.1:${GIWG_POSTGRES_PORT:-15432}:5432"
+      - "127.0.0.1:${WARGAME_POSTGRES_PORT:-15432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
-      - ./src/GIWG_Schema_PostgreSQL.sql:/docker-entrypoint-initdb.d/10-giwg.sql:ro
+      - ./src/Wargame_Schema_PostgreSQL.sql:/docker-entrypoint-initdb.d/10-wargame.sql:ro
     shm_size: 128mb
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U giwg -d giwg && psql -U giwg -d giwg -Atqc 'SELECT 1 FROM public.workflow_transition LIMIT 1' >/dev/null"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U wargame -d wargame && psql -U wargame -d wargame -Atqc 'SELECT 1 FROM public.workflow_transition LIMIT 1' >/dev/null"]
       interval: 5s
       timeout: 5s
       retries: 30
@@ -43,21 +43,21 @@ services:
     image: neo4j:5.26.0-community
     restart: unless-stopped
     environment:
-      NEO4J_AUTH: neo4j/${GIWG_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
-      GIWG_NEO4J_PASSWORD: ${GIWG_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
+      NEO4J_AUTH: neo4j/${WARGAME_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
+      WARGAME_NEO4J_PASSWORD: ${WARGAME_NEO4J_PASSWORD:?Run setup.ps1 or setup.sh first}
       NEO4J_server_memory_heap_initial__size: 256m
       NEO4J_server_memory_heap_max__size: 1G
       NEO4J_server_memory_pagecache_size: 256m
-      NEO4J_server_bolt_advertised__address: localhost:${GIWG_NEO4J_BOLT_PORT:-17687}
+      NEO4J_server_bolt_advertised__address: localhost:${WARGAME_NEO4J_BOLT_PORT:-17687}
       NEO4J_dbms_usage__report_enabled: "false"
     ports:
-      - "127.0.0.1:${GIWG_NEO4J_HTTP_PORT:-7474}:7474"
-      - "127.0.0.1:${GIWG_NEO4J_BOLT_PORT:-17687}:7687"
+      - "127.0.0.1:${WARGAME_NEO4J_HTTP_PORT:-7474}:7474"
+      - "127.0.0.1:${WARGAME_NEO4J_BOLT_PORT:-17687}:7687"
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
     healthcheck:
-      test: ["CMD-SHELL", "cypher-shell -a bolt://localhost:7687 -u neo4j -p \"$$GIWG_NEO4J_PASSWORD\" 'RETURN 1' >/dev/null 2>&1"]
+      test: ["CMD-SHELL", "cypher-shell -a bolt://localhost:7687 -u neo4j -p \"$$WARGAME_NEO4J_PASSWORD\" 'RETURN 1' >/dev/null 2>&1"]
       interval: 10s
       timeout: 15s
       retries: 30

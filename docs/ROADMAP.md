@@ -1,6 +1,6 @@
 # Development roadmap
 
-This repository begins with the GIWG database and Docker foundation.
+This repository begins with the Wargame database and Docker foundation.
 
 ## Foundation included
 

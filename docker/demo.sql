@@ -1,5 +1,5 @@
 -- Synthetic demonstration only. manage.py executes this in one transaction.
-INSERT INTO giwg_game(game_id,name,status) VALUES ('a0000000-0000-4000-8000-000000000001','GIWG Docker Demonstration','active');
+INSERT INTO wargame_game(game_id,name,status) VALUES ('a0000000-0000-4000-8000-000000000001','Wargame Docker Demonstration','active');
 INSERT INTO player_team(team_id,game_id,name) VALUES ('a0000000-0000-4000-8000-000000000002','a0000000-0000-4000-8000-000000000001','Blue Test Team');
 INSERT INTO turn(turn_id,game_id,turn_number) VALUES ('a0000000-0000-4000-8000-000000000003','a0000000-0000-4000-8000-000000000001',1);
 UPDATE turn SET status='open' WHERE turn_id='a0000000-0000-4000-8000-000000000003';

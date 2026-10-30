@@ -1,13 +1,13 @@
-# Wargame Ontology — GIWG
+# Wargame Ontology
 
-Repository for the GIWG wargame data model and implementation.
+Shared data model and implementation for wargames and turn-based games.
 
-The current foundation includes a initial schema, validation, graph
+The current foundation includes an initial schema, validation, graph
 projection and a local development stack. See [development roadmap](docs/ROADMAP.md)
 for application features still to build and [contributing](CONTRIBUTING.md) for
 change/test guidance.
 
-Local development stack for the corrected GIWG implementation. Includes PostgreSQL,
+Local development stack for the corrected Wargame implementation. Includes PostgreSQL,
 Neo4j, the Python validator and graph ETL, synthetic demo data, and test commands.
 The source implementation and its prior test results are in `src/`.
 
@@ -57,12 +57,12 @@ Open **http://localhost:7474** in your browser.
 
 - Connection URI: `bolt://localhost:17687`
 - Username: `neo4j`
-- Password: the `GIWG_NEO4J_PASSWORD` value in your local `.env`.
+- Password: the `WARGAME_NEO4J_PASSWORD` value in your local `.env`.
 
 Run:
 
 ```cypher
-MATCH (n:GIWGProjection)-[r]->(m:GIWGProjection)
+MATCH (n:WargameProjection)-[r]->(m:WargameProjection)
 RETURN n, r, m LIMIT 100;
 ```
 
@@ -85,7 +85,7 @@ only. A new stack starts empty; data is added when you run demo or smoke-test.
 | Show database versions and counts | `docker compose run --rm tools status` |
 | Run the 38 Python/schema/unit checks | `docker compose run --rm tools test` |
 | Seed, run actual ETL, compare graph/source IDs | `docker compose run --rm tools smoke-test` |
-| Open PostgreSQL SQL shell | `docker compose exec postgres psql -U giwg -d giwg` |
+| Open PostgreSQL SQL shell | `docker compose exec postgres psql -U wargame -d wargame` |
 | Stop while preserving data | `docker compose down` |
 
 Put input JSON in the package's `data/` folder; the tools container reads it at
@@ -103,14 +103,14 @@ synthetic test fixture, not a general Turn Card or OneNote ingestion adapter.
 
 Database healthchecks gate bootstrap. Tools wait for successful bootstrap.
 A bootstrap container that exits with code **0** is expected, not a crash.
-The Python container runs as an unprivileged user. The PostgreSQL `giwg` account
+The Python container runs as an unprivileged user. The PostgreSQL `wargame` account
 is the local development administrator; this package does not implement production
 application roles or user authentication workflows.
 
 Host ports default to PostgreSQL `15432`, Neo4j Browser `7474`, Bolt `17687`, bound
 to loopback only. Change the three port variables in `.env` if they conflict.
 Inside the Compose network the tools use `postgres:5432` and `neo4j:7687`.
-Host PostgreSQL clients use database/user `giwg` and the PostgreSQL password from
+Host PostgreSQL clients use database/user `wargame` and the PostgreSQL password from
 `.env`. Source DSNs are assembled through psycopg's connection-string encoder.
 
 ## Persistence and changes
@@ -129,8 +129,8 @@ change procedures or reset this disposable stack.
 To back up PostgreSQL without PowerShell binary-redirection issues:
 
 ```text
-docker compose exec postgres pg_dump -U giwg -d giwg -Fc -f /tmp/giwg-backup.dump
-docker compose cp postgres:/tmp/giwg-backup.dump ./giwg-backup.dump
+docker compose exec postgres pg_dump -U wargame -d wargame -Fc -f /tmp/wargame-backup.dump
+docker compose cp postgres:/tmp/wargame-backup.dump ./wargame-backup.dump
 ```
 
 Only to intentionally erase **all development data and graph history**:
@@ -171,7 +171,7 @@ is not an offline image bundle.
 
 ## Automated checks on GitHub
 
-The [GIWG checks workflow](.github/workflows/ci.yml) runs on pushes to main, pull
+The [Wargame checks workflow](.github/workflows/ci.yml) runs on pushes to main, pull
 requests, and manual dispatch. It tests contracts and database constraints, builds the tools
 image, starts actual PostgreSQL/Neo4j containers, and runs the full smoke-test twice.
 Check the repository's **Actions** tab for the current result; the full containerized pipeline has passed on GitHub Actions.

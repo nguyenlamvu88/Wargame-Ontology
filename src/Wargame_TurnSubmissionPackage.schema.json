@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://giwg.example/schemas/turn-submission-package.json",
-  "title": "GIWG Turn Submission Package (Turn Card)",
+  "$id": "https://wargame.example/schemas/turn-submission-package.json",
+  "title": "Wargame Turn Submission Package (Turn Card)",
   "description": "Schema-validated player handoff to adjudication . Aligns with TurnSubmissionPackage + Move + Action entities, enforces additionalProperties:false at all levels, and validates receipt_status state invariants.",
   "type": "object",
   "required": [

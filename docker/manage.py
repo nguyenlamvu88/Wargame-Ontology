@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GIWG container commands. Run `docker compose run --rm tools help`."""
+"""Wargame container commands. Run `docker compose run --rm tools help`."""
 import argparse
 import json
 import os
@@ -17,33 +17,33 @@ from etl_postgres_to_neo4j import sync_postgres_to_neo4j,NODE_TABLES
 
 
 def configure():
-    if not os.environ.get('GIWG_PG_DSN'):
-        os.environ['GIWG_PG_DSN']=make_conninfo(
-            host=os.environ.get('GIWG_PG_HOST','postgres'),
-            port=os.environ.get('GIWG_PG_PORT','5432'),
-            dbname=os.environ.get('GIWG_PG_DB','giwg'),
-            user=os.environ.get('GIWG_PG_USER','giwg'),
-            password=os.environ['GIWG_PG_PASSWORD'],connect_timeout=10)
-    for key in ['GIWG_PG_PASSWORD','GIWG_NEO4J_PASS']:
+    if not os.environ.get('WARGAME_PG_DSN'):
+        os.environ['WARGAME_PG_DSN']=make_conninfo(
+            host=os.environ.get('WARGAME_PG_HOST','postgres'),
+            port=os.environ.get('WARGAME_PG_PORT','5432'),
+            dbname=os.environ.get('WARGAME_PG_DB','wargame'),
+            user=os.environ.get('WARGAME_PG_USER','wargame'),
+            password=os.environ['WARGAME_PG_PASSWORD'],connect_timeout=10)
+    for key in ['WARGAME_PG_PASSWORD','WARGAME_NEO4J_PASS']:
         value=os.environ.get(key,'')
         if not value or value.startswith('REPLACE_'):
             raise ValueError('Generate real local passwords using setup.ps1 or setup.sh first')
 
 
 def graph():
-    return GraphDatabase.driver(os.environ['GIWG_NEO4J_URI'],
-        auth=(os.environ.get('GIWG_NEO4J_USER','neo4j'),os.environ['GIWG_NEO4J_PASS']),
+    return GraphDatabase.driver(os.environ['WARGAME_NEO4J_URI'],
+        auth=(os.environ.get('WARGAME_NEO4J_USER','neo4j'),os.environ['WARGAME_NEO4J_PASS']),
         connection_timeout=10,max_transaction_retry_time=15)
 
 
 def bootstrap():
-    with psycopg.connect(os.environ['GIWG_PG_DSN']) as pg:
+    with psycopg.connect(os.environ['WARGAME_PG_DSN']) as pg:
         tables=pg.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'").fetchone()[0]
-        if tables<50:raise RuntimeError('GIWG SQL initialization is incomplete; inspect PostgreSQL logs')
+        if tables<50:raise RuntimeError('Wargame SQL initialization is incomplete; inspect PostgreSQL logs')
         pg.execute('SELECT 1 FROM workflow_transition LIMIT 1').fetchone()
-    text=(SOURCE/'GIWG_Schema_Neo4j.cypher').read_text()
+    text=(SOURCE/'Wargame_Schema_Neo4j.cypher').read_text()
     text='\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('//'))
-    with graph() as driver,driver.session(database=os.environ.get('GIWG_NEO4J_DATABASE','neo4j')) as session:
+    with graph() as driver,driver.session(database=os.environ.get('WARGAME_NEO4J_DATABASE','neo4j')) as session:
         for statement in text.split(';'):
             if statement.strip():session.run(statement).consume()
         session.run('CALL db.awaitIndexes(120)').consume()
@@ -51,10 +51,10 @@ def bootstrap():
 
 
 def seed_demo():
-    with psycopg.connect(os.environ['GIWG_PG_DSN']) as pg:
+    with psycopg.connect(os.environ['WARGAME_PG_DSN']) as pg:
         # Serialize against ETL snapshots and other demo invocations.
         pg.execute('SELECT pg_advisory_xact_lock(719731201)')
-        exists=pg.execute('SELECT 1 FROM giwg_game WHERE game_id=%s',('a0000000-0000-4000-8000-000000000001',)).fetchone()
+        exists=pg.execute('SELECT 1 FROM wargame_game WHERE game_id=%s',('a0000000-0000-4000-8000-000000000001',)).fetchone()
         if exists:
             print('Demo game already exists; no duplicate records inserted')
             return
@@ -63,21 +63,21 @@ def seed_demo():
 
 
 def status():
-    with psycopg.connect(os.environ['GIWG_PG_DSN']) as pg:
+    with psycopg.connect(os.environ['WARGAME_PG_DSN']) as pg:
         sql_version=pg.execute('SELECT version()').fetchone()[0]
         counts={table:pg.execute(f'SELECT count(*) FROM {table}').fetchone()[0] for table,_,_ in NODE_TABLES}
-    with graph() as driver,driver.session(database=os.environ.get('GIWG_NEO4J_DATABASE','neo4j')) as session:
+    with graph() as driver,driver.session(database=os.environ.get('WARGAME_NEO4J_DATABASE','neo4j')) as session:
         neo_version=session.run('CALL dbms.components() YIELD versions RETURN versions[0] AS version').single()['version']
-        nodes=session.run('MATCH (n:GIWGProjection) RETURN count(n) AS n').single()['n']
-        rels=session.run('MATCH (:GIWGProjection)-[r]->(:GIWGProjection) RETURN count(r) AS n').single()['n']
+        nodes=session.run('MATCH (n:WargameProjection) RETURN count(n) AS n').single()['n']
+        rels=session.run('MATCH (:WargameProjection)-[r]->(:WargameProjection) RETURN count(r) AS n').single()['n']
     print(json.dumps({'postgresql':sql_version,'neo4j':neo_version,'source_rows':counts,'graph_nodes':nodes,'graph_relationships':rels},indent=2))
 
 
 def verify_projection():
-    with psycopg.connect(os.environ['GIWG_PG_DSN']) as pg,graph() as driver,driver.session(database=os.environ.get('GIWG_NEO4J_DATABASE','neo4j')) as session:
+    with psycopg.connect(os.environ['WARGAME_PG_DSN']) as pg,graph() as driver,driver.session(database=os.environ.get('WARGAME_NEO4J_DATABASE','neo4j')) as session:
         for table,label,pk in NODE_TABLES:
             expected={str(r[0]) for r in pg.execute(f'SELECT {pk} FROM {table}').fetchall()}
-            actual={r['id'] for r in session.run(f'MATCH (n:GIWGProjection:{label}) WHERE n.{pk} IS NOT NULL RETURN n.{pk} AS id')}
+            actual={r['id'] for r in session.run(f'MATCH (n:WargameProjection:{label}) WHERE n.{pk} IS NOT NULL RETURN n.{pk} AS id')}
             if actual!=expected:raise RuntimeError(f'Projection IDs differ for {table}')
     print('INTEGRATION PASSED: PostgreSQL -> psycopg -> ETL -> Neo4j; all 37 entity ID sets match')
 

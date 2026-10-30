@@ -1,4 +1,4 @@
-name: GIWG checks
+name: Wargame checks
 
 "on":
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: giwg-${{ github.workflow }}-${{ github.ref }}
+  group: wargame-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

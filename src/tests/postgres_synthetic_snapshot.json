@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "giwg_game": [
+    "wargame_game": [
       {
         "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
         "name": "Test",
@@ -364,7 +364,7 @@
     [
       [
         "SELECT game_id AS src, scenario_id AS tgt FROM scenario",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "HAS_SCENARIO",
         "Scenario",
@@ -375,7 +375,7 @@
     [
       [
         "SELECT game_id AS src, ruleset_id AS tgt FROM rule_set WHERE game_id IS NOT NULL",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "USES_RULE_SET",
         "RuleSet",
@@ -391,7 +391,7 @@
     [
       [
         "SELECT game_id AS src, turn_id AS tgt FROM turn",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "HAS_TURN",
         "Turn",
@@ -407,7 +407,7 @@
     [
       [
         "SELECT game_id AS src, team_id AS tgt FROM player_team",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "HAS_TEAM",
         "PlayerTeam",
@@ -423,7 +423,7 @@
     [
       [
         "SELECT game_id AS src, world_state_id AS tgt FROM world_state",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "MAINTAINS_STATE_HISTORY",
         "WorldState",
@@ -439,7 +439,7 @@
     [
       [
         "SELECT game_id AS src, event_id AS tgt FROM game_event",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "RECORDS",
         "GameEvent",
@@ -1149,7 +1149,7 @@
     [
       [
         "SELECT game_id src, relationship_id tgt FROM actor_relationship",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "HAS_ACTOR_RELATIONSHIP",
         "ActorRelationship",
@@ -1182,7 +1182,7 @@
     [
       [
         "SELECT game_id src, interface_id tgt FROM compartmented_interface",
-        "GIWGGame",
+        "WargameGame",
         "game_id",
         "HAS_INTERFACE",
         "CompartmentedInterface",

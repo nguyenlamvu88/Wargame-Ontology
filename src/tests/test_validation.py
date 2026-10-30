@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from validate_turn_card import validate_turn_card
 from etl_postgres_to_neo4j import serialize_row,NODE_TABLES,EDGE_SPECS,project_snapshot
-SCHEMA=json.loads((ROOT/'GIWG_TurnSubmissionPackage.schema.json').read_text())
+SCHEMA=json.loads((ROOT/'Wargame_TurnSubmissionPackage.schema.json').read_text())
 CARD=json.loads((ROOT/'sample_valid_turn_card.json').read_text())
 
 def errors(doc,prior=None):return validate_turn_card(doc,SCHEMA,prior)
@@ -66,7 +66,7 @@ def test_returned_resubmit_revision_timestamp():
  d['revision']=2;d['submitted_at']='2026-10-29T16:00:00Z';assert not errors(d,prior)
 @pytest.mark.parametrize('status,missing',[('assigned','owner_participant_id'),('closed','closed_at')])
 def test_rfi_missing_conditional(status,missing):
- s=json.loads((ROOT/'GIWG_RFI.schema.json').read_text())
+ s=json.loads((ROOT/'Wargame_RFI.schema.json').read_text())
  d={'rfi_id':CARD['package_id'],'requesting_team_id':CARD['submitting_team_id'],'question':'Question','status':status,'priority':'medium','opened_at':CARD['submitted_at'],
  'responses':[{'response_id':CARD['package_id'],'content':'Answer','responded_at':CARD['submitted_at']}]}
  assert list(Draft202012Validator(s,format_checker=FormatChecker()).iter_errors(d))
@@ -74,7 +74,7 @@ def test_temporal_and_null_serialization():
  r=serialize_row({'t':datetime(2026,10,30,tzinfo=timezone.utc),'nullable':None,'payload':{'a':1}})
  assert r=={'t':'2026-10-30T00:00:00+00:00','nullable':None,'payload':'{"a": 1}'}
 def test_every_projected_label_has_edges_and_unique_constraint():
- c=(ROOT/'GIWG_Schema_Neo4j.cypher').read_text()
+ c=(ROOT/'Wargame_Schema_Neo4j.cypher').read_text()
  labels={x[1] for x in NODE_TABLES}
  touched={x[1] for x in EDGE_SPECS}|{x[4] for x in EDGE_SPECS}
  assert labels<=touched
@@ -94,9 +94,9 @@ class Tx:
   if 'AS matched' in q:return Result({'matched':len(kwargs['pairs'])})
   return Result({})
 def test_refresh_is_owned_and_replaces_properties():
- tx=Tx();nodes={t:[] for t,_,_ in NODE_TABLES};nodes['giwg_game']=[{'game_id':'x','name':None}]
+ tx=Tx();nodes={t:[] for t,_,_ in NODE_TABLES};nodes['wargame_game']=[{'game_id':'x','name':None}]
  project_snapshot(tx,nodes,[])
- assert any('MATCH (n:GIWGProjection) DETACH DELETE n' in q for q,_ in tx.calls)
+ assert any('MATCH (n:WargameProjection) DETACH DELETE n' in q for q,_ in tx.calls)
  assert any('SET n = row' in q for q,_ in tx.calls)
  assert not any('SET n += row' in q for q,_ in tx.calls)
 def test_unmanaged_edges_abort():

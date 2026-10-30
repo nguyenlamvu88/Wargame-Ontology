@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://giwg.example/schemas/adjudication-case.json",
-  "title": "GIWG Adjudication Case",
+  "$id": "https://wargame.example/schemas/adjudication-case.json",
+  "title": "Wargame Adjudication Case",
   "description": "Formal evaluation of a submitted move or action, including versioned rules/methods, evidence, M&S runs, outcomes, and effects .",
   "type": "object",
   "required": [
