@@ -10,12 +10,12 @@ else
   fi
   umask 077
   {
-    echo 'COMPOSE_PROJECT_NAME=giwg'
-    printf 'GIWG_POSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 24)"
-    printf 'GIWG_NEO4J_PASSWORD=%s\n' "$(openssl rand -hex 24)"
-    echo 'GIWG_POSTGRES_PORT=15432'
-    echo 'GIWG_NEO4J_HTTP_PORT=7474'
-    echo 'GIWG_NEO4J_BOLT_PORT=17687'
+    echo 'COMPOSE_PROJECT_NAME=wargame'
+    printf 'WARGAME_POSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 24)"
+    printf 'WARGAME_NEO4J_PASSWORD=%s\n' "$(openssl rand -hex 24)"
+    echo 'WARGAME_POSTGRES_PORT=15432'
+    echo 'WARGAME_NEO4J_HTTP_PORT=7474'
+    echo 'WARGAME_NEO4J_BOLT_PORT=17687'
   } > .env
   echo 'Created .env with unique local passwords.'
 fi

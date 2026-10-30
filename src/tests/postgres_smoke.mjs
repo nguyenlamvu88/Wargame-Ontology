@@ -11,10 +11,10 @@ function ok(value,label){if(!value)throw Error(label);passed++;console.log('PASS
 async function reject(label,q,p=[],pattern){try{await rows(q,p);}catch(e){if(pattern&&!pattern.test(e.message))throw Error(`${label}: unexpected error ${e.message}`);ok(true,label);return;}throw Error('Unexpectedly allowed: '+label);}
 try {
  console.log((await one('select version()')).version);
- let sql=fs.readFileSync(path.join(root,'GIWG_Schema_PostgreSQL.sql'),'utf8').replace(/^CREATE EXTENSION[^;]+;/gm,'');
+ let sql=fs.readFileSync(path.join(root,'Wargame_Schema_PostgreSQL.sql'),'utf8').replace(/^CREATE EXTENSION[^;]+;/gm,'');
  await db.exec(sql);
  ok((await one("select count(*)::int n from information_schema.tables where table_schema='public' and table_type='BASE TABLE'")).n===50,'50 tables created');
- const g=(await one("insert into giwg_game(name) values ('Test') returning game_id")).game_id;
+ const g=(await one("insert into wargame_game(name) values ('Test') returning game_id")).game_id;
  const t=(await one('insert into turn(game_id,turn_number) values ($1,1) returning turn_id',[g])).turn_id;
  const team=(await one("insert into player_team(game_id,name) values ($1,'Blue') returning team_id",[g])).team_id;
  const p1=(await one('insert into turn_submission_package(turn_id,submitting_team_id) values ($1,$2) returning package_id',[t,team])).package_id;
@@ -108,10 +108,10 @@ try {
  for(const [q] of mapping.edges)await rows(q);
  ok(true,'all graph edge source queries execute');
 
- if(process.env.GIWG_SNAPSHOT_OUT){
+ if(process.env.WARGAME_SNAPSHOT_OUT){
   const nodes={};for(const [table] of mapping.nodes)nodes[table]=await rows(`SELECT * FROM ${table}`);
   const edges=[];for(const spec of mapping.edges)edges.push([spec,(await rows(spec[0])).map(r=>({src:r.src,tgt:r.tgt}))]);
-  fs.writeFileSync(process.env.GIWG_SNAPSHOT_OUT,JSON.stringify({nodes,edges},null,2));
+  fs.writeFileSync(process.env.WARGAME_SNAPSHOT_OUT,JSON.stringify({nodes,edges},null,2));
  }
  console.log(`RESULT: ${passed} checks passed`);
 } catch(e) {console.error('FAILED:',e.message,'position',e.position,'context',e.where);process.exitCode=1;} finally {await db.close();}

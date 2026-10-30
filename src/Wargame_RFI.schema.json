@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://giwg.example/schemas/rfi.json",
-  "title": "GIWG Request for Information (RFI)",
+  "$id": "https://wargame.example/schemas/rfi.json",
+  "title": "Wargame Request for Information (RFI)",
   "description": "Two-way planning and adjudication support exchange with SLA and response tracking .",
   "type": "object",
   "required": [

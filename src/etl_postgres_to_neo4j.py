@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Atomically rebuild the GIWGProjection-owned graph from a repeatable-read snapshot.
+"""Atomically rebuild the WargameProjection-owned graph from a repeatable-read snapshot.
 
 Prototype full-refresh mode: the projection is read-only/disposable. Manual edits on
-GIWGProjection nodes are intentionally replaced. Unmarked graph data is untouched.
+WargameProjection nodes are intentionally replaced. Unmarked graph data is untouched.
 For large deployments use a generation/CDC design instead of one large transaction.
 """
 from datetime import date, datetime, timezone
@@ -43,28 +43,28 @@ def serialize_row(row):
 
 def project_snapshot(tx,nodes,edges):
     # A write lock on a dedicated marker serializes concurrent ETL jobs.
-    tx.run("MERGE (p:GIWGProjectionControl {name:'giwg'}) SET p.locked_at=datetime() ").consume()
+    tx.run("MERGE (p:WargameProjectionControl {name:'wargame'}) SET p.locked_at=datetime() ").consume()
     # Do not detach-delete edges belonging to some other application.
-    external=tx.run('MATCH (n:GIWGProjection)-[r]-() WHERE coalesce(r.giwg_projection,false)=false RETURN count(r) AS n').single()['n']
+    external=tx.run('MATCH (n:WargameProjection)-[r]-() WHERE coalesce(r.wargame_projection,false)=false RETURN count(r) AS n').single()['n']
     if external:
         raise RuntimeError('Projection has unmanaged relationships; detach or migrate these explicitly first')
-    tx.run('MATCH (n:GIWGProjection) DETACH DELETE n').consume()
+    tx.run('MATCH (n:WargameProjection) DETACH DELETE n').consume()
     for table,label,pk in NODE_TABLES:
         rows=nodes[table]
         if rows:
-            tx.run(f'UNWIND $rows AS row CREATE (n:GIWGProjection:{label}) SET n = row',rows=rows).consume()
-    tx.run("MATCH (a:GIWGProjection:Action) WHERE a.action_class IN ['MilitaryAction','CombatAction'] SET a:MilitaryAction").consume()
-    tx.run("MATCH (a:GIWGProjection:Action) WHERE a.action_class='CombatAction' SET a:CombatAction").consume()
-    tx.run('MATCH (a:GIWGProjection:Actor) WHERE a.is_coalition=true SET a:Coalition').consume()
+            tx.run(f'UNWIND $rows AS row CREATE (n:WargameProjection:{label}) SET n = row',rows=rows).consume()
+    tx.run("MATCH (a:WargameProjection:Action) WHERE a.action_class IN ['MilitaryAction','CombatAction'] SET a:MilitaryAction").consume()
+    tx.run("MATCH (a:WargameProjection:Action) WHERE a.action_class='CombatAction' SET a:CombatAction").consume()
+    tx.run('MATCH (a:WargameProjection:Actor) WHERE a.is_coalition=true SET a:Coalition').consume()
     for subtype,labels in ARTIFACT_SUBTYPE_LABELS.items():
-        tx.run(f"MATCH (n:GIWGProjection:InformationArtifact) WHERE n.artifact_type=$subtype SET n:{':'.join(labels)}",subtype=subtype).consume()
+        tx.run(f"MATCH (n:WargameProjection:InformationArtifact) WHERE n.artifact_type=$subtype SET n:{':'.join(labels)}",subtype=subtype).consume()
     for spec,pairs in edges:
         _,sl,sp,rel,tl,tp=spec
         if not pairs:continue
         result=tx.run(f'''UNWIND $pairs AS pair
-          MATCH (s:GIWGProjection:{sl} {{{sp}:pair.src}})
-          MATCH (t:GIWGProjection:{tl} {{{tp}:pair.tgt}})
-          MERGE (s)-[r:{rel}]->(t) SET r.giwg_projection=true
+          MATCH (s:WargameProjection:{sl} {{{sp}:pair.src}})
+          MATCH (t:WargameProjection:{tl} {{{tp}:pair.tgt}})
+          MERGE (s)-[r:{rel}]->(t) SET r.wargame_projection=true
           RETURN count(*) AS matched''',pairs=pairs).single()
         if result['matched']!=len(pairs):
             raise RuntimeError(f'Unmatched graph endpoints for {rel}; whole refresh rolled back')
@@ -72,10 +72,10 @@ def project_snapshot(tx,nodes,edges):
 
 def sync_postgres_to_neo4j():
     # Required configuration, no embedded passwords or production-default DSN.
-    dsn=os.environ['GIWG_PG_DSN']
-    uri=os.environ['GIWG_NEO4J_URI']
-    user=os.environ['GIWG_NEO4J_USER']
-    password=os.environ['GIWG_NEO4J_PASS']
+    dsn=os.environ['WARGAME_PG_DSN']
+    uri=os.environ['WARGAME_NEO4J_URI']
+    user=os.environ['WARGAME_NEO4J_USER']
+    password=os.environ['WARGAME_NEO4J_PASS']
     # A PostgreSQL session advisory lock is acquired before taking the snapshot,
     # and held through the graph commit. Concurrent runs cannot publish stale
     # snapshots out of order. A disconnected process releases this lock.
@@ -90,7 +90,7 @@ def sync_postgres_to_neo4j():
                     pairs=[{'src':str(r['src']),'tgt':str(r['tgt'])} for r in pg.execute(spec[0]).fetchall()]
                     edges.append((spec,pairs))
             with GraphDatabase.driver(uri,auth=(user,password)) as driver:
-                database=os.environ.get('GIWG_NEO4J_DATABASE','neo4j')
+                database=os.environ.get('WARGAME_NEO4J_DATABASE','neo4j')
                 with driver.session(database=database) as session:
                     print(session.execute_write(project_snapshot,nodes,edges))
         finally:

@@ -1,4 +1,4 @@
-# GIWG implementation package
+# Wargame implementation package
 
 Corrected implementation draft, 30 October 2026. PostgreSQL is the source of record;
 Neo4j is a disposable read-only projection. This package is not an application,
@@ -14,7 +14,7 @@ python -m venv .venv
 # Linux/macOS: source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-psql "$GIWG_PG_DSN" -v ON_ERROR_STOP=1 -f GIWG_Schema_PostgreSQL.sql
+psql "$WARGAME_PG_DSN" -v ON_ERROR_STOP=1 -f Wargame_Schema_PostgreSQL.sql
 python validate_turn_card.py sample_valid_turn_card.json
 python validate_turn_card.py sample_invalid_turn_card.json
 ```
@@ -26,7 +26,7 @@ must normalize nested payloads and insert child records transactionally.
 
 ## Initial database installation
 
-This is the initial implementation. Apply GIWG_Schema_PostgreSQL.sql once to an
+This is the initial implementation. Apply Wargame_Schema_PostgreSQL.sql once to an
 empty database. There is no prior release or upgrade script in this package.
 The schema contains **50 tables**, **3 views**, and **37 projected node classes**.
 Relational association tables become graph edges rather than extra nodes.
@@ -94,21 +94,21 @@ non-adjudicated effects become a real requirement.
 
 ## Neo4j projection
 
-Apply `GIWG_Schema_Neo4j.cypher` before running the ETL. It declares **38 uniqueness
+Apply `Wargame_Schema_Neo4j.cypher` before running the ETL. It declares **38 uniqueness
 constraints: 37 projected entity keys plus 1 refresh control key**. No seed/demo
 records are inserted. The relationship catalog is generated from graph_mapping.json.
 
-Supply GIWG_PG_DSN, GIWG_NEO4J_URI, GIWG_NEO4J_USER, GIWG_NEO4J_PASS and optionally
-GIWG_NEO4J_DATABASE using your environment/secret store. See `.env.example` for
+Supply WARGAME_PG_DSN, WARGAME_NEO4J_URI, WARGAME_NEO4J_USER, WARGAME_NEO4J_PASS and optionally
+WARGAME_NEO4J_DATABASE using your environment/secret store. See `.env.example` for
 names; the script does not automatically load that file.
 
 ```bash
-cypher-shell -a "$GIWG_NEO4J_URI" -u "$GIWG_NEO4J_USER" -f GIWG_Schema_Neo4j.cypher
+cypher-shell -a "$WARGAME_NEO4J_URI" -u "$WARGAME_NEO4J_USER" -f Wargame_Schema_Neo4j.cypher
 python etl_postgres_to_neo4j.py
 ```
 
 Use a dedicated test graph/database for the first run. Unmarked Neo4j nodes are not automatically deleted; use a fresh test graph for
-the initial installation. The new projection is owned through GIWGProjection labels and
+the initial installation. The new projection is owned through WargameProjection labels and
 relationship markers. ETL aborts if it encounters unmanaged relationships touching
 owned nodes. Unmarked graph data is untouched.
 
@@ -137,7 +137,7 @@ python -m pip install -r requirements-dev.txt
 python -m pytest tests/test_validation.py -q
 npm ci
 npm run test:sql
-# With a NEW, EMPTY, disposable Neo4j database and GIWG_NEO4J_* variables set:
+# With a NEW, EMPTY, disposable Neo4j database and WARGAME_NEO4J_* variables set:
 python tests/neo4j_live.py tests/postgres_synthetic_snapshot.json
 ```
 
@@ -145,7 +145,7 @@ The SQL test uses the real PostgreSQL engine compiled for WebAssembly via PGlite
 It omits pgcrypto/uuid-ossp extension declarations because built-in UUID generation
 is available there; standalone server extension installation remains untested.
 To regenerate the graph fixture on Linux/macOS:
-`GIWG_SNAPSHOT_OUT=tests/postgres_synthetic_snapshot.json npm run test:sql`.
+`WARGAME_SNAPSHOT_OUT=tests/postgres_synthetic_snapshot.json npm run test:sql`.
 The live graph test creates constraints and test records, and deliberately deletes
 and refreshes owned projection data. It must be run only against a disposable
 empty test database. It does not start Neo4j itself.
@@ -155,10 +155,10 @@ concurrency/deadlock behavior and production role grants were not exercised.
 
 ## Contents and remaining work
 
-- GIWG_Schema_PostgreSQL.sql: full fresh database installation.
+- Wargame_Schema_PostgreSQL.sql: full fresh database installation.
 - Three *.schema.json contracts and two sample turn cards.
 - validate_turn_card.py, workflow_rules.json: validation and workflow policy.
-- etl_postgres_to_neo4j.py, graph_mapping.json, GIWG_Schema_Neo4j.cypher.
+- etl_postgres_to_neo4j.py, graph_mapping.json, Wargame_Schema_Neo4j.cypher.
 - tests/, locked dependency files, TEST_RESULTS.md.
 
 The earlier README referenced an Excel dictionary, requirements DOCX and ontology

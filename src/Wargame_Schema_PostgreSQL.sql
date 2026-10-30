@@ -1,12 +1,12 @@
--- GIWG initial database installation. Run once against an empty database.
+-- Wargame initial database installation. Run once against an empty database.
 BEGIN;
 -- =============================================================================
 
--- GIWG Physical Data Schema (PostgreSQL)
+-- Wargame Physical Data Schema (PostgreSQL)
 
--- Derived from: GIWG ontology, turn process and requirements
+-- Derived from: Wargame ontology, turn process and requirements
 
--- Companion: GIWG_Data_Dictionary_and_Schema.xlsx
+-- Companion: WARGAME_Data_Dictionary_and_Schema.xlsx
 
 -- Initial implementation | UNCLASSIFIED
 
@@ -138,7 +138,7 @@ CREATE TYPE instrument_category AS ENUM (
 
 -- -----------------------------------------------------------------------------
 
-CREATE TABLE giwg_game (
+CREATE TABLE wargame_game (
 
   game_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
@@ -166,7 +166,7 @@ CREATE TABLE scenario (
 
   scenario_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id             UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id             UUID NOT NULL REFERENCES wargame_game(game_id),
 
   scope               TEXT,
 
@@ -184,7 +184,7 @@ CREATE TABLE rule_set (
 
   ruleset_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID REFERENCES giwg_game(game_id),
+  game_id           UUID REFERENCES wargame_game(game_id),
 
   version           VARCHAR(30) NOT NULL,
 
@@ -240,7 +240,7 @@ CREATE TABLE participant_role (
 
   role_id           UUID NOT NULL REFERENCES role(role_id),
 
-  game_id           UUID REFERENCES giwg_game(game_id),
+  game_id           UUID REFERENCES wargame_game(game_id),
 
   assigned_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -252,7 +252,7 @@ CREATE TABLE player_team (
 
   team_id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id               UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id               UUID NOT NULL REFERENCES wargame_game(game_id),
 
   name                  VARCHAR(100) NOT NULL,
 
@@ -282,7 +282,7 @@ CREATE TABLE actor (
 
   actor_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id           UUID NOT NULL REFERENCES wargame_game(game_id),
 
   name              VARCHAR(200) NOT NULL,
 
@@ -332,7 +332,7 @@ CREATE TABLE actor_relationship (
 
   relationship_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id           UUID NOT NULL REFERENCES wargame_game(game_id),
 
   relationship_type VARCHAR(50) NOT NULL,
 
@@ -358,7 +358,7 @@ CREATE TABLE turn (
 
   turn_id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id                   UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id                   UUID NOT NULL REFERENCES wargame_game(game_id),
 
   turn_number               INTEGER NOT NULL,
 
@@ -416,7 +416,7 @@ CREATE TABLE world_state (
 
   world_state_id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id           UUID NOT NULL REFERENCES wargame_game(game_id),
 
   version           VARCHAR(50) NOT NULL,
 
@@ -472,7 +472,7 @@ CREATE TABLE information_artifact (
 
   artifact_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id             UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id             UUID NOT NULL REFERENCES wargame_game(game_id),
 
   artifact_type       artifact_type NOT NULL,
 
@@ -548,7 +548,7 @@ CREATE TABLE information_release (
 
   release_id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id                   UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id                   UUID NOT NULL REFERENCES wargame_game(game_id),
 
   turn_id                   UUID REFERENCES turn(turn_id),
 
@@ -1078,7 +1078,7 @@ CREATE TABLE game_event (
 
   event_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id           UUID NOT NULL REFERENCES wargame_game(game_id),
 
   turn_id           UUID REFERENCES turn(turn_id),
 
@@ -1120,7 +1120,7 @@ CREATE TABLE compartmented_interface (
 
   interface_id      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  game_id           UUID NOT NULL REFERENCES giwg_game(game_id),
+  game_id           UUID NOT NULL REFERENCES wargame_game(game_id),
 
   turn_id           UUID REFERENCES turn(turn_id),
 
@@ -1208,7 +1208,7 @@ WHERE pt.game_id = t.game_id;
 
 -- -----------------------------------------------------------------------------
 
-COMMENT ON TABLE giwg_game IS 'Bounded wargame event container';
+COMMENT ON TABLE wargame_game IS 'Bounded wargame event container';
 
 COMMENT ON TABLE world_state IS 'Authoritative, versioned game-world state; published rows are immutable';
 
@@ -1279,7 +1279,7 @@ INSERT INTO workflow_transition VALUES
 REVOKE ALL ON workflow_transition FROM PUBLIC;
 GRANT SELECT ON workflow_transition TO PUBLIC;
 
-CREATE FUNCTION giwg_workflow_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_workflow_guard() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE o jsonb; n jsonb; field text; os text; ns text; initial text; ps text; gid uuid;
 BEGIN
  n := to_jsonb(NEW);
@@ -1340,13 +1340,13 @@ BEGIN
  END IF;
  RETURN NEW;
 END $$;
-CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON turn FOR EACH ROW EXECUTE FUNCTION giwg_workflow_guard();
-CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON turn_submission_package FOR EACH ROW EXECUTE FUNCTION giwg_workflow_guard();
-CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON move FOR EACH ROW EXECUTE FUNCTION giwg_workflow_guard();
-CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON adjudication_case FOR EACH ROW EXECUTE FUNCTION giwg_workflow_guard();
-CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON rfi FOR EACH ROW EXECUTE FUNCTION giwg_workflow_guard();
+CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON turn FOR EACH ROW EXECUTE FUNCTION wargame_workflow_guard();
+CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON turn_submission_package FOR EACH ROW EXECUTE FUNCTION wargame_workflow_guard();
+CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON move FOR EACH ROW EXECUTE FUNCTION wargame_workflow_guard();
+CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON adjudication_case FOR EACH ROW EXECUTE FUNCTION wargame_workflow_guard();
+CREATE TRIGGER workflow_guard BEFORE INSERT OR UPDATE ON rfi FOR EACH ROW EXECUTE FUNCTION wargame_workflow_guard();
 
-CREATE FUNCTION giwg_immutable_header() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_immutable_header() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE o jsonb; n jsonb;
 BEGIN
  IF TG_OP <> 'INSERT' THEN o:=to_jsonb(OLD); END IF;
@@ -1362,13 +1362,13 @@ BEGIN
  IF TG_OP='DELETE' THEN RETURN OLD; END IF;
  RETURN NEW;
 END $$;
-CREATE TRIGGER immutable_header BEFORE INSERT OR UPDATE OR DELETE ON world_state FOR EACH ROW EXECUTE FUNCTION giwg_immutable_header();
-CREATE TRIGGER immutable_header BEFORE DELETE ON turn_submission_package FOR EACH ROW EXECUTE FUNCTION giwg_immutable_header();
-CREATE TRIGGER immutable_header BEFORE DELETE ON adjudication_case FOR EACH ROW EXECUTE FUNCTION giwg_immutable_header();
+CREATE TRIGGER immutable_header BEFORE INSERT OR UPDATE OR DELETE ON world_state FOR EACH ROW EXECUTE FUNCTION wargame_immutable_header();
+CREATE TRIGGER immutable_header BEFORE DELETE ON turn_submission_package FOR EACH ROW EXECUTE FUNCTION wargame_immutable_header();
+CREATE TRIGGER immutable_header BEFORE DELETE ON adjudication_case FOR EACH ROW EXECUTE FUNCTION wargame_immutable_header();
 
 -- Resolve all ancestry paths from JSONB rather than referencing nonexistent NEW fields.
 -- Parent locks serialize content changes against concurrent header locking/resolution.
-CREATE FUNCTION giwg_packages_for_row(tbl text, r jsonb) RETURNS SETOF uuid LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_packages_for_row(tbl text, r jsonb) RETURNS SETOF uuid LANGUAGE plpgsql AS $$
 DECLARE mid uuid; aid uuid; pid uuid;
 BEGIN
  IF r IS NULL THEN RETURN; END IF;
@@ -1385,13 +1385,13 @@ BEGIN
    IF pid IS NOT NULL THEN RETURN NEXT pid; END IF;
  END IF;
 END $$;
-CREATE FUNCTION giwg_package_child_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_package_child_guard() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE o jsonb; n jsonb; pid uuid; st text;
 BEGIN
  IF TG_OP<>'INSERT' THEN o:=to_jsonb(OLD); END IF;
  IF TG_OP<>'DELETE' THEN n:=to_jsonb(NEW); END IF;
  FOR pid IN SELECT DISTINCT x FROM (
-   SELECT giwg_packages_for_row(TG_TABLE_NAME,o) x UNION ALL SELECT giwg_packages_for_row(TG_TABLE_NAME,n) x
+   SELECT wargame_packages_for_row(TG_TABLE_NAME,o) x UNION ALL SELECT wargame_packages_for_row(TG_TABLE_NAME,n) x
  ) q WHERE x IS NOT NULL ORDER BY x LOOP
    SELECT receipt_status::text INTO st FROM turn_submission_package WHERE package_id=pid FOR UPDATE;
    IF st IN ('locked','accepted') THEN
@@ -1406,11 +1406,11 @@ BEGIN
 END $$;
 DO $$ DECLARE t text; BEGIN
  FOREACH t IN ARRAY ARRAY['move','action','instrument_of_power','dependency','risk','desired_effect','package_artifact','move_artifact','move_rfi'] LOOP
-   EXECUTE format('CREATE TRIGGER package_child_guard BEFORE INSERT OR UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION giwg_package_child_guard()',t);
+   EXECUTE format('CREATE TRIGGER package_child_guard BEFORE INSERT OR UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION wargame_package_child_guard()',t);
  END LOOP;
 END $$;
 
-CREATE FUNCTION giwg_cases_for_row(tbl text,r jsonb) RETURNS SETOF uuid LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_cases_for_row(tbl text,r jsonb) RETURNS SETOF uuid LANGUAGE plpgsql AS $$
 DECLARE cid uuid; oid uuid; rid uuid;
 BEGIN
  IF r IS NULL THEN RETURN; END IF;
@@ -1431,13 +1431,13 @@ BEGIN
    IF cid IS NOT NULL THEN RETURN NEXT cid; END IF;
  END IF;
 END $$;
-CREATE FUNCTION giwg_case_child_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_case_child_guard() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE o jsonb; n jsonb; cid uuid; st text;
 BEGIN
  IF TG_OP<>'INSERT' THEN o:=to_jsonb(OLD); END IF;
  IF TG_OP<>'DELETE' THEN n:=to_jsonb(NEW); END IF;
  FOR cid IN SELECT DISTINCT x FROM (
-   SELECT giwg_cases_for_row(TG_TABLE_NAME,o) x UNION ALL SELECT giwg_cases_for_row(TG_TABLE_NAME,n) x
+   SELECT wargame_cases_for_row(TG_TABLE_NAME,o) x UNION ALL SELECT wargame_cases_for_row(TG_TABLE_NAME,n) x
  ) q WHERE x IS NOT NULL ORDER BY x LOOP
    SELECT status::text INTO st FROM adjudication_case WHERE case_id=cid FOR UPDATE;
    IF st='resolved' THEN RAISE EXCEPTION 'Resolved case % protects %',cid,TG_TABLE_NAME; END IF;
@@ -1447,14 +1447,14 @@ BEGIN
 END $$;
 DO $$ DECLARE t text; BEGIN
  FOREACH t IN ARRAY ARRAY['outcome','effect','case_evidence','ms_run','combat_resolution_request','outcome_desired_effect'] LOOP
-   EXECUTE format('CREATE TRIGGER case_child_guard BEFORE INSERT OR UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION giwg_case_child_guard()',t);
+   EXECUTE format('CREATE TRIGGER case_child_guard BEFORE INSERT OR UPDATE OR DELETE ON %I FOR EACH ROW EXECUTE FUNCTION wargame_case_child_guard()',t);
  END LOOP;
 END $$;
 -- transition_effect is a later authorization association: it may be added after resolution.
 -- Changes to an outcome/effect itself remain blocked.
 
 -- Validate move/package identity and dual-parent consistency.
-CREATE FUNCTION giwg_consistency_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_consistency_guard() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE r jsonb:=to_jsonb(NEW); p turn_submission_package%ROWTYPE; mid uuid; g1 uuid; g2 uuid;
 BEGIN
  IF TG_TABLE_NAME='move' AND r->>'package_id' IS NOT NULL THEN
@@ -1476,12 +1476,12 @@ BEGIN
 END $$;
 DO $$ DECLARE t text; BEGIN
  FOREACH t IN ARRAY ARRAY['move','dependency','risk','adjudication_case','turn_submission_package','state_transition'] LOOP
-   EXECUTE format('CREATE TRIGGER consistency_guard BEFORE INSERT OR UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION giwg_consistency_guard()',t);
+   EXECUTE format('CREATE TRIGGER consistency_guard BEFORE INSERT OR UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION wargame_consistency_guard()',t);
  END LOOP;
 END $$;
 
 -- Preserve the answered/closed response invariant when response rows are reparented/deleted.
-CREATE FUNCTION giwg_response_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE FUNCTION wargame_response_guard() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE st text;
 BEGIN
  IF TG_OP='DELETE' OR to_jsonb(NEW)->>'rfi_id' IS DISTINCT FROM to_jsonb(OLD)->>'rfi_id' THEN
@@ -1493,6 +1493,6 @@ BEGIN
  IF TG_OP='DELETE' THEN RETURN OLD; END IF;
  RETURN NEW;
 END $$;
-CREATE TRIGGER response_guard BEFORE UPDATE OR DELETE ON rfi_response FOR EACH ROW EXECUTE FUNCTION giwg_response_guard();
+CREATE TRIGGER response_guard BEFORE UPDATE OR DELETE ON rfi_response FOR EACH ROW EXECUTE FUNCTION wargame_response_guard();
 
 COMMIT;

@@ -76,7 +76,7 @@ def validate_turn_card(doc, schema, prior_doc=None):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('json_file')
-    p.add_argument('--schema',default=str(ROOT/'GIWG_TurnSubmissionPackage.schema.json'))
+    p.add_argument('--schema',default=str(ROOT/'Wargame_TurnSubmissionPackage.schema.json'))
     p.add_argument('--prior')
     args=p.parse_args()
     try:

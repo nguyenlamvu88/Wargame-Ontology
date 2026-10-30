@@ -1,4 +1,4 @@
-# GIWG validation results
+# Wargame validation results
 
 Date: 30 October 2026
 
@@ -63,7 +63,7 @@ Verified:
 - Unmanaged graph relationships abort refresh and unmanaged nodes survive.
 
 Repeat with `python tests/neo4j_live.py tests/postgres_synthetic_snapshot.json`
-against a fresh disposable Neo4j database with GIWG_NEO4J_* environment variables.
+against a fresh disposable Neo4j database with WARGAME_NEO4J_* environment variables.
 The fixture is synthetic and contains no operational data.
 
 ## Additional checks
