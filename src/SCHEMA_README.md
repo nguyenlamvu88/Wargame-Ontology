@@ -1,4 +1,4 @@
-# GIWG implementation package v1.2
+# GIWG implementation package
 
 Corrected implementation draft, 30 October 2026. PostgreSQL is the source of record;
 Neo4j is a disposable read-only projection. This package is not an application,
@@ -24,24 +24,12 @@ resolves its default schema relative to its own script, not the working director
 Schema validation does not insert rows or verify foreign keys. An ingestion service
 must normalize nested payloads and insert child records transactionally.
 
-### Upgrading a v1.1 database
+## Initial database installation
 
-Back up first and pause writers. Apply **only** `migrate_v1_1_to_v1_2.sql` with
-`psql -v ON_ERROR_STOP=1`. Do not apply both the full schema and the migration to
-the same database: the full schema already includes it. This is a one-time migration.
-
-The migration preserves old RFI/move associations in `move_rfi`, removes
-`rfi.related_move_id`, and recreates the dependent `v_open_rfis` view. It adds
-`outcome_desired_effect`, stronger constraints, and the workflow policy table.
-It aborts instead of inventing missing outcomes, timestamps, military fields,
-or dependency statuses. Resolve incompatible legacy data explicitly before retrying.
-Existing historical EVALUATES links cannot be recovered automatically; populate them
-from reviewed source records. Existing column grants or permissions on the recreated
-view must be reapplied by your administrator.
-
-New schema count: **50 tables** (47 original + 2 association tables + 1 workflow
-policy table), **3 views**, **37 projected node classes**. Not every relational
-association table is a node; most become graph edges.
+This is the initial implementation. Apply GIWG_Schema_PostgreSQL.sql once to an
+empty database. There is no prior release or upgrade script in this package.
+The schema contains **50 tables**, **3 views**, and **37 projected node classes**.
+Relational association tables become graph edges rather than extra nodes.
 
 ## Workflow policy
 
@@ -88,17 +76,15 @@ storage policy in the application.
 ## JSON contract changes
 
 All three schemas remain Draft 2020-12. Use a validator with format checking enabled.
-Turn cards declare schema_version 1.2 if that field is supplied. Subtype requirements,
+The optional schema_version field is informational and has no hard-coded release label. Subtype requirements,
 non-whitespace required text, SQL VARCHAR limits, and conditional required fields
 are checked in the JSON contracts. Submitted content fields with semantic rules are
 also enforced by the database. Dependency status is now one of pending, satisfied,
 blocked, waived; confirm these vocabulary choices with white cell before deployment.
 
 RFIs use `related_move_ids` rather than `related_move_id`. A move's `rfi_ids`
-normalizes into the same `move_rfi` association. The old design already supported
-one move with many RFIs; the array was not inherently inconsistent with that FK.
-The v1.2 many-to-many design additionally permits the same RFI to support multiple
-moves. That is an intentional capability expansion.
+normalizes into the same `move_rfi` association. The many-to-many association allows one move to reference several RFIs and
+one RFI to support several moves.
 
 Nested outcome.evaluated_desired_effect_ids normalizes into
 `outcome_desired_effect`; the graph projects Outcome-[:EVALUATES]->DesiredEffect.
@@ -121,9 +107,8 @@ cypher-shell -a "$GIWG_NEO4J_URI" -u "$GIWG_NEO4J_USER" -f GIWG_Schema_Neo4j.cyp
 python etl_postgres_to_neo4j.py
 ```
 
-Use a dedicated test graph/database for the first run. Existing v1.1 unmarked
-Neo4j nodes require an explicit migration or a fresh graph; they are deliberately
-not auto-deleted. The new projection is owned through GIWGProjection labels and
+Use a dedicated test graph/database for the first run. Unmarked Neo4j nodes are not automatically deleted; use a fresh test graph for
+the initial installation. The new projection is owned through GIWGProjection labels and
 relationship markers. ETL aborts if it encounters unmanaged relationships touching
 owned nodes. Unmarked graph data is untouched.
 
@@ -171,11 +156,10 @@ concurrency/deadlock behavior and production role grants were not exercised.
 ## Contents and remaining work
 
 - GIWG_Schema_PostgreSQL.sql: full fresh database installation.
-- migrate_v1_1_to_v1_2.sql: one-time existing database upgrade.
 - Three *.schema.json contracts and two sample turn cards.
 - validate_turn_card.py, workflow_rules.json: validation and workflow policy.
 - etl_postgres_to_neo4j.py, graph_mapping.json, GIWG_Schema_Neo4j.cypher.
-- tests/, locked dependency files, CHANGELOG.md, TEST_RESULTS.md.
+- tests/, locked dependency files, TEST_RESULTS.md.
 
 The earlier README referenced an Excel dictionary, requirements DOCX and ontology
 JSON that were not supplied here. They were not regenerated or verified. A user

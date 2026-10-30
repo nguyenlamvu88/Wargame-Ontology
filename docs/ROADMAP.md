@@ -1,10 +1,10 @@
 # Development roadmap
 
-This repository begins with the corrected GIWG v1.2 database and Docker foundation.
+This repository begins with the GIWG database and Docker foundation.
 
 ## Foundation included
 
-- PostgreSQL schema, workflow triggers, immutability rules and v1.1 migration.
+- PostgreSQL schema, workflow triggers, immutability rules.
 - Turn Card, RFI and adjudication JSON contracts.
 - Turn Card CLI validation and graph projection.
 - Docker Compose services, synthetic demo and end-to-end smoke-test command.

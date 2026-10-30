@@ -44,6 +44,4 @@ PASS last answered response cannot be removed
 PASS move/RFI linking table usable
 PASS SQL/Python transition matrices agree
 PASS all graph edge source queries execute
-PASS migration preserves legacy RFI link
-PASS migration restores dependent RFI view
-RESULT: 47 checks passed
+RESULT: 45 checks passed

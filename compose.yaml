@@ -1,7 +1,7 @@
 name: giwg
 
 x-tool-image: &tool-image
-  image: giwg-tools:1.2
+  image: giwg-tools:latest
   build:
     context: .
     dockerfile: Dockerfile

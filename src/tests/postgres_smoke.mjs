@@ -113,19 +113,5 @@ try {
   const edges=[];for(const spec of mapping.edges)edges.push([spec,(await rows(spec[0])).map(r=>({src:r.src,tgt:r.tgt}))]);
   fs.writeFileSync(process.env.GIWG_SNAPSHOT_OUT,JSON.stringify({nodes,edges},null,2));
  }
- // Verify upgrade with existing v1.1 data and an old single-move RFI association.
- const legacy=new PGlite();
- try {
-  const original=sql.split('-- GIWG v1.2. Apply once')[0];
-  await legacy.exec(original);
-  const lg=(await legacy.query("insert into giwg_game(name) values ('Legacy') returning game_id")).rows[0].game_id;
-  const lt=(await legacy.query('insert into turn(game_id,turn_number) values ($1,1) returning turn_id',[lg])).rows[0].turn_id;
-  const lteam=(await legacy.query("insert into player_team(game_id,name) values ($1,'Legacy team') returning team_id",[lg])).rows[0].team_id;
-  const lm=(await legacy.query('insert into move(team_id,turn_id) values ($1,$2) returning move_id',[lteam,lt])).rows[0].move_id;
-  await legacy.query("insert into rfi(requesting_team_id,related_move_id,question) values ($1,$2,'Legacy question')",[lteam,lm]);
-  await legacy.exec(fs.readFileSync(path.join(root,'migrate_v1_1_to_v1_2.sql'),'utf8'));
-  ok((await legacy.query('select count(*)::int n from move_rfi')).rows[0].n===1,'migration preserves legacy RFI link');
-  ok((await legacy.query('select count(*)::int n from v_open_rfis')).rows[0].n===1,'migration restores dependent RFI view');
- } finally {await legacy.close();}
  console.log(`RESULT: ${passed} checks passed`);
 } catch(e) {console.error('FAILED:',e.message,'position',e.position,'context',e.where);process.exitCode=1;} finally {await db.close();}

@@ -1,4 +1,4 @@
-// GIWG v1.2 | PostgreSQL projection | 37 unique node keys
+// GIWG | PostgreSQL projection | 37 unique node keys
 CREATE CONSTRAINT giwg_giwg_game_key IF NOT EXISTS FOR (n:GIWGGame) REQUIRE n.game_id IS UNIQUE;
 CREATE CONSTRAINT giwg_scenario_key IF NOT EXISTS FOR (n:Scenario) REQUIRE n.scenario_id IS UNIQUE;
 CREATE CONSTRAINT giwg_rule_set_key IF NOT EXISTS FOR (n:RuleSet) REQUIRE n.ruleset_id IS UNIQUE;

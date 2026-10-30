@@ -10,7 +10,7 @@ python -m pip install -r src/requirements-dev.txt
 python -m pytest src/tests/test_validation.py -q
 ```
 
-For the PostgreSQL engine and migration tests:
+For the PostgreSQL engine tests:
 
 ```bash
 cd src

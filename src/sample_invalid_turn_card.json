@@ -10,13 +10,13 @@
       "move_id": "550e8400-e29b-41d4-a716-446655440010",
       "version": 1,
       "status": "draft",
-      "undeclared_move_field": "rejected by v1.1 schema additionalProperties:false",
+      "undeclared_move_field": "rejected by schema additionalProperties:false",
       "actions": [
         {
           "action_id": "550e8400-e29b-41d4-a716-446655440020",
           "action_class": "CombatAction",
           "statement": "",
-          "undeclared_action_field": "also rejected by v1.1 schema",
+          "undeclared_action_field": "also rejected by schema",
           "instruments_of_power": [
             {
               "category": "cyber_magic"
