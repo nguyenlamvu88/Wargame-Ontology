@@ -11,20 +11,22 @@ from psycopg.conninfo import make_conninfo
 from neo4j import GraphDatabase
 
 ROOT=Path(__file__).resolve().parents[1]
-SOURCE=ROOT/'src'
+SOURCE=ROOT/'src' if (ROOT/'src').is_dir() else ROOT
 sys.path.insert(0,str(SOURCE))
 from etl_postgres_to_neo4j import sync_postgres_to_neo4j,NODE_TABLES
 
 
 def configure():
     if not os.environ.get('WARGAME_PG_DSN'):
+        if not os.environ.get('WARGAME_PG_PASSWORD') or os.environ['WARGAME_PG_PASSWORD'].startswith('REPLACE_'):
+            raise ValueError('Generate a PostgreSQL password using setup.ps1 or setup.sh first')
         os.environ['WARGAME_PG_DSN']=make_conninfo(
             host=os.environ.get('WARGAME_PG_HOST','postgres'),
             port=os.environ.get('WARGAME_PG_PORT','5432'),
             dbname=os.environ.get('WARGAME_PG_DB','wargame'),
             user=os.environ.get('WARGAME_PG_USER','wargame'),
             password=os.environ['WARGAME_PG_PASSWORD'],connect_timeout=10)
-    for key in ['WARGAME_PG_PASSWORD','WARGAME_NEO4J_PASS']:
+    for key in (['WARGAME_NEO4J_PASS'] if os.environ.get('WARGAME_PG_DSN') else ['WARGAME_PG_PASSWORD','WARGAME_NEO4J_PASS']):
         value=os.environ.get(key,'')
         if not value or value.startswith('REPLACE_'):
             raise ValueError('Generate real local passwords using setup.ps1 or setup.sh first')
@@ -38,8 +40,9 @@ def graph():
 
 def bootstrap():
     with psycopg.connect(os.environ['WARGAME_PG_DSN']) as pg:
+        pg.execute((SOURCE/'migrations/shared_materials.sql').read_text(),prepare=False)
         tables=pg.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'").fetchone()[0]
-        if tables<50:raise RuntimeError('Wargame SQL initialization is incomplete; inspect PostgreSQL logs')
+        if tables<52:raise RuntimeError('Wargame SQL initialization is incomplete; inspect PostgreSQL logs')
         pg.execute('SELECT 1 FROM workflow_transition LIMIT 1').fetchone()
     text=(SOURCE/'Wargame_Schema_Neo4j.cypher').read_text()
     text='\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('//'))
@@ -94,7 +97,7 @@ def main():
         return subprocess.call([sys.executable,str(SOURCE/'validate_turn_card.py'),*(extra or [str(SOURCE/'sample_valid_turn_card.json')])])
     if extra:parser.error('Unexpected arguments: '+' '.join(extra))
     if args.command=='test':
-        return subprocess.call([sys.executable,'-m','pytest',str(SOURCE/'tests'/'test_validation.py'),'-q','-p','no:cacheprovider'])
+        return subprocess.call([sys.executable,'-m','pytest',str(SOURCE/'tests'),'-q','-p','no:cacheprovider'])
     configure()
     if args.command=='bootstrap':bootstrap()
     elif args.command=='sync':sync_postgres_to_neo4j()

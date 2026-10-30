@@ -1,2 +1,4 @@
+Historical foundation run. See ../TEST_RESULTS.md and current CI for shared-materials validation.
+
 ......................................                                   [100%]
 38 passed in 1.32s

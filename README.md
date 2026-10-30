@@ -1,3 +1,16 @@
+## Shared game materials
+
+Upload PDF, DOCX, and PPTX references at http://localhost:8080, search their extracted
+passages, and cite a passage on a new turn card or move. Original files, source
+revisions, exact citation locations and failed-extraction status persist in PostgreSQL.
+English scanned-PDF OCR runs locally. Neo4j projects the document/passage/submission
+connections. No AI service or API key is required.
+
+See [the complete workflow, data dictionary, migration and limits](docs/SHARED_MATERIALS.md).
+Existing installations should back up their database, run `docker compose build`,
+then `docker compose run --rm bootstrap` and recreate the web service. This applies
+an additive migration; **do not delete your volumes to update**.
+
 ## Browser proof of concept
 
 After running setup and `docker compose up -d --build`, open
@@ -22,8 +35,8 @@ actual submission timestamps. The complete original JSON is retained as an
 information artifact and artifact chunk linked to the package. Saving and graph
 refresh are separate operations so a graph outage does not lose a saved card.
 
-This local demonstration has no authentication, adjudication screens, existing-card
-editing, or Word/PDF extraction. The web port is bound to `127.0.0.1`; keep it local.
+This local demonstration has no authentication, adjudication screens, or existing-card
+editing. Shared PDF/DOCX/PPTX ingestion and passage citations are now included. The web port is bound to `127.0.0.1`; keep it local.
 The single-process Python WSGI server is intended for this proof of concept, not
 shared production hosting. For an API/database integration check, run:
 
@@ -116,7 +129,7 @@ only. A new stack starts empty; data is added when you run demo or smoke-test.
 | Load synthetic demo and refresh graph | `docker compose run --rm tools demo` |
 | Refresh graph from PostgreSQL | `docker compose run --rm tools sync` |
 | Show database versions and counts | `docker compose run --rm tools status` |
-| Run the 38 Python/schema/unit checks | `docker compose run --rm tools test` |
+| Run the Python/schema/extraction checks | `docker compose run --rm tools test` |
 | Seed, run actual ETL, compare graph/source IDs | `docker compose run --rm tools smoke-test` |
 | Open PostgreSQL SQL shell | `docker compose exec postgres psql -U wargame -d wargame` |
 | Stop while preserving data | `docker compose down` |
@@ -177,23 +190,16 @@ for a migration or on data you intend to preserve.
 
 ## Testing status
 
-- Compose v2.39.4 accepted the rendered configuration, including the tools profile.
-- Python command entry points, valid-card validation and 38 unit/schema checks passed.
-- Demo SQL executed against PostgreSQL 18.6 via PGlite and completed the turn/package
-  lifecycle with an authorized state transition.
-- The underlying implementation previously passed 45 PostgreSQL checks and 18 live
-  Neo4j Community 5.26.0 checks (see `src/TEST_RESULTS.md`).
-- **Docker Engine is not available in the authoring environment. The image build,
-  actual Compose startup, image entrypoints/healthchecks and full containerized
-  smoke-test have not been executed here.** Use the smoke-test command above on
-  your Docker host to verify the complete standalone PostgreSQL-to-Neo4j path.
-- PowerShell setup script was reviewed; PowerShell is not installed here.
+The project has local Python/schema/extraction and PostgreSQL engine checks, plus
+GitHub Actions that build Docker and exercise real PostgreSQL and Neo4j. The shared
+materials tests cover PDF/DOCX/PPTX, scanned-PDF OCR, immutable originals, source
+revisions, search, citations, rollback and graph projection. See
+[PACKAGE_TEST_RESULTS.md](PACKAGE_TEST_RESULTS.md) for the latest run status.
 
-This is a backend development package. A player/white-cell interface, general
-record ingestion, document extraction, GraphRAG, and production deployment
-controls remain separate work. On an air-gapped machine, prebuild/export the
-images and transfer them through your approved process; this source checkout by itself
-is not an offline image bundle.
+Production authentication, multi-user extraction queues, AI question answering,
+automatic fact extraction, and operational deployment controls remain future work.
+On an air-gapped machine, prebuild/export the images and transfer them through your
+approved process; this source checkout alone is not an offline image bundle.
 
 ## Official configuration references
 

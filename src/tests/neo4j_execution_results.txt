@@ -1,3 +1,5 @@
+Historical foundation run. See ../TEST_RESULTS.md and current CI for shared-materials validation.
+
 ENGINE 5.26.0
 PASS fresh disposable Neo4j database
 PASS all 38 Cypher constraints execute

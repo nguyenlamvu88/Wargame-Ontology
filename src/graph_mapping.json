@@ -714,6 +714,30 @@
       "PERFORMED_BY",
       "Actor",
       "actor_id"
+    ],
+    [
+      "SELECT package_id AS src, chunk_id AS tgt FROM submission_citation WHERE move_id IS NULL",
+      "TurnSubmissionPackage",
+      "package_id",
+      "CITES_PASSAGE",
+      "ArtifactChunk",
+      "chunk_id"
+    ],
+    [
+      "SELECT move_id AS src, chunk_id AS tgt FROM submission_citation WHERE move_id IS NOT NULL",
+      "Move",
+      "move_id",
+      "CITES_PASSAGE",
+      "ArtifactChunk",
+      "chunk_id"
+    ],
+    [
+      "SELECT newer.artifact_id AS src, older.artifact_id AS tgt FROM information_artifact newer JOIN information_artifact older ON newer.game_id=older.game_id AND newer.source_family_id=older.source_family_id AND newer.source_revision=older.source_revision+1",
+      "InformationArtifact",
+      "artifact_id",
+      "SUPERSEDES",
+      "InformationArtifact",
+      "artifact_id"
     ]
   ]
 }

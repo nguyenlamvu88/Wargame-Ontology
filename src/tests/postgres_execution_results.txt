@@ -1,3 +1,5 @@
+Historical foundation run. See ../TEST_RESULTS.md and current CI for shared-materials validation.
+
 PostgreSQL 18.6 (PGlite 0.5.13) on wasm32-unknown-emscripten, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.5 (1db513782be24469589d7cb8a1f1834e9a33f271), 32-bit
 PASS 50 tables created
 PASS turn cannot skip stages

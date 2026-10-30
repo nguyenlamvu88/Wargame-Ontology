@@ -44,6 +44,7 @@ CREATE CONSTRAINT wargame_projection_control_key IF NOT EXISTS FOR (n:WargamePro
 // AS_OF_TURN
 // AUTHORIZED_BY
 // BELONGS_TO_TURN
+// CITES_PASSAGE
 // CITES_ARTIFACT
 // CONSIDERS
 // CONTAINS
@@ -87,6 +88,7 @@ CREATE CONSTRAINT wargame_projection_control_key IF NOT EXISTS FOR (n:WargamePro
 // SEEKS
 // SUBMITS
 // SUBMITS_PACKAGE
+// SUPERSEDES
 // SUPPORTS
 // TO_ACTOR
 // TO_STATE
@@ -99,3 +101,10 @@ CREATE CONSTRAINT wargame_projection_control_key IF NOT EXISTS FOR (n:WargamePro
 // USES_VERSIONED_RULES
 
 // No seed data. Use PostgreSQL as the source of record.
+
+// Passage evidence query (run in Neo4j Browser, not during schema installation):
+// MATCH (m:Move)-[:CITES_PASSAGE]->(c:ArtifactChunk)<-[:HAS_CHUNK]-(d:InformationArtifact)
+// RETURN m,c,d LIMIT 100;
+// Uploaded source metadata stays on InformationArtifact. Original bytes remain only
+// in PostgreSQL document_source, never in the graph. Chunks are source excerpts,
+// not automatically asserted game facts. SUPERSEDES relates immutable revisions.
