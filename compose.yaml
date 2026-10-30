@@ -74,6 +74,21 @@ services:
       neo4j:
         condition: service_healthy
 
+  web:
+    <<: *tool-image
+    entrypoint: ["python", "/opt/wargame/web/app.py"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WARGAME_WEB_PORT:-8080}:8080"
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 10
+
   tools:
     <<: *tool-image
     profiles: ["tools"]

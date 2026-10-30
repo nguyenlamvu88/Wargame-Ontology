@@ -54,13 +54,15 @@ jobs:
         run: docker compose run --rm tools test
       - name: Test the full PostgreSQL to Neo4j pipeline
         run: docker compose run --rm tools smoke-test
+      - name: Test browser interface API and persistence
+        run: docker compose run --rm --entrypoint python tools /opt/wargame/web/smoke.py
       - name: Verify a repeated sync
         run: docker compose run --rm tools smoke-test
       - name: Show container state and logs
         if: always()
         run: |
           docker compose ps -a
-          docker compose logs --no-color --tail=150 bootstrap postgres neo4j
+          docker compose logs --no-color --tail=150 bootstrap postgres neo4j web
       - name: Remove disposable CI databases
         if: always()
         run: docker compose down --volumes --remove-orphans
