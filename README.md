@@ -1,3 +1,36 @@
+## Browser proof of concept
+
+After running setup and `docker compose up -d --build`, open
+http://localhost:8080 (or `WARGAME_WEB_PORT` from `.env`).
+
+1. Choose **Create example workspace**. This creates a synthetic game, open turn,
+   team and actor, then loads an unsaved draft card.
+2. Edit action statements, timing and location in the review form. Use the full
+   JSON editor for additional moves, risks, dependencies and desired effects.
+3. Choose **Validate card**. The server checks the JSON schema, same-game references,
+   and SQL rules in a transaction that is rolled back.
+4. Choose **Save card**. The server repeats the checks and commits all records
+   together to PostgreSQL. The card appears in the saved-card list.
+5. Choose **Refresh Neo4j**, then explore the graph in Neo4j Browser.
+
+You can also import a JSON file (up to 2 MB) or download the current card. Imported
+cards must reference an existing open turn and team. Use the example's IDs as a
+starting point; `src/sample_valid_turn_card.json` contains illustrative IDs that
+are not automatically present in the database. Imports accept **new draft or
+submitted packages only**; duplicate package IDs are rejected. PostgreSQL assigns
+actual submission timestamps. The complete original JSON is retained as an
+information artifact and artifact chunk linked to the package. Saving and graph
+refresh are separate operations so a graph outage does not lose a saved card.
+
+This local demonstration has no authentication, adjudication screens, existing-card
+editing, or Word/PDF extraction. The web port is bound to `127.0.0.1`; keep it local.
+The single-process Python WSGI server is intended for this proof of concept, not
+shared production hosting. For an API/database integration check, run:
+
+```bash
+docker compose run --rm --entrypoint python tools /opt/wargame/web/smoke.py
+```
+
 # Wargame Ontology
 
 Shared data model and implementation for wargames and turn-based games.

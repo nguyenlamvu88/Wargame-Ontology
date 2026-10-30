@@ -23,3 +23,8 @@ This repository begins with the Wargame database and Docker foundation.
 
 A passing foundation test is not evidence that the future application features
 already exist. Only synthetic demonstration records are included.
+
+
+The Docker browser proof of concept now supports new JSON card import, review,
+transactional validation/save, and manual graph refresh. Next interface work: card
+editing with revisions, adjudication, authentication/roles, and document extraction.

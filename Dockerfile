@@ -6,6 +6,7 @@ RUN python -m pip install --no-cache-dir -r requirements-dev.txt \
     && useradd --uid 10001 --create-home wargame
 COPY --chown=wargame:wargame src/ /opt/wargame/src/
 COPY --chown=wargame:wargame docker/ /opt/wargame/docker/
+COPY --chown=wargame:wargame web/ /opt/wargame/web/
 USER wargame
 ENTRYPOINT ["python", "/opt/wargame/docker/manage.py"]
 CMD ["help"]
