@@ -1,0 +1,49 @@
+PostgreSQL 18.6 (PGlite 0.5.13) on wasm32-unknown-emscripten, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.5 (1db513782be24469589d7cb8a1f1834e9a33f271), 32-bit
+PASS 50 tables created
+PASS turn cannot skip stages
+PASS valid turn lifecycle
+PASS initial turn status enforced
+PASS move cannot skip stages
+PASS cannot add draft move after submission
+PASS resubmit needs revision increment
+PASS resubmit refreshes timestamp
+PASS action edits use correct parent guard
+PASS action reparent bypass blocked
+PASS move reparent bypass blocked
+PASS dependency edits blocked
+PASS dependency reparent bypass blocked
+PASS risk edits blocked
+PASS desired effects protected
+PASS instrument protected
+PASS package evidence protected
+PASS move evidence protected
+PASS locked move advances without content edits
+PASS move regression blocked
+PASS locked header protected
+PASS blank action rejected
+PASS whitespace tabs rejected
+PASS combat subtype requires fields
+PASS published state immutable
+PASS published state undeletable
+PASS case cannot skip evaluation
+PASS resolved outcome protected
+PASS resolved effect protected
+PASS effect reparent blocked
+PASS evidence protected
+PASS model run protected
+PASS model run reparent blocked
+PASS evaluated effects protected
+PASS null outcome bypass blocked
+PASS reopen writes atomic audit event
+PASS reopened case editable
+PASS RFI cannot skip answer
+PASS assigned RFI needs owner
+PASS answered RFI needs response
+PASS valid RFI lifecycle
+PASS last answered response cannot be removed
+PASS move/RFI linking table usable
+PASS SQL/Python transition matrices agree
+PASS all graph edge source queries execute
+PASS migration preserves legacy RFI link
+PASS migration restores dependent RFI view
+RESULT: 47 checks passed

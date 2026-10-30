@@ -1,0 +1,22 @@
+ENGINE 5.26.0
+PASS fresh disposable Neo4j database
+PASS all 38 Cypher constraints execute
+Received notification from DBMS server: <GqlStatusObject gql_status='01N50', status_description='warn: label does not exist. The label `GIWGProjection` does not exist. Verify that the spelling is correct.', position=<SummaryInputPosition line=1, column=10, offset=9>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 9, 'line': 1, 'column': 10}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n:GIWGProjection)-[r]-() WHERE coalesce(r.giwg_projection,false)=false RETURN count(r) AS n'
+Received notification from DBMS server: <GqlStatusObject gql_status='01N52', status_description='warn: property key does not exist. The property `giwg_projection` does not exist. Verify that the spelling is correct.', position=<SummaryInputPosition line=1, column=50, offset=49>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 49, 'line': 1, 'column': 50}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n:GIWGProjection)-[r]-() WHERE coalesce(r.giwg_projection,false)=false RETURN count(r) AS n'
+PASS PostgreSQL snapshot nodes projected
+PASS all PostgreSQL snapshot edge pairs projected
+PASS outcome-to-desired-effect relationship exists
+PASS move-level risk relationship exists
+PASS repeat refresh has no duplicate nodes
+PASS repeat refresh has no duplicate edges
+PASS duplicate IDs rejected by live constraint
+PASS subtype labels applied
+PASS obsolete labels and NULL properties removed
+PASS deleted source row removed
+PASS stale relationships removed
+PASS missing endpoints detected by live writer
+PASS failed refresh rolls back node replacement
+PASS failed refresh preserves previous relationships
+PASS unmanaged relationship aborts live refresh
+PASS unmanaged node preserved
+RESULT: 18 live Neo4j checks passed; 26 initial nodes, 38 initial relationships

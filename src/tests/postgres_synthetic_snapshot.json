@@ -1,0 +1,1271 @@
+{
+  "nodes": {
+    "giwg_game": [
+      {
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "name": "Test",
+        "objectives": null,
+        "configuration": null,
+        "access_model": null,
+        "status": "planned",
+        "created_at": "2026-10-30T11:52:55.055Z",
+        "created_by": null,
+        "updated_at": "2026-10-30T11:52:55.055Z",
+        "classification_marking": null
+      }
+    ],
+    "scenario": [],
+    "rule_set": [
+      {
+        "ruleset_id": "8da2ab7a-5f7a-460a-a709-0da85fb3b354",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "version": "1",
+        "applicability": null,
+        "approval_status": "draft",
+        "content_uri": null,
+        "created_at": "2026-10-30T11:52:55.210Z"
+      }
+    ],
+    "turn": [
+      {
+        "turn_id": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "turn_number": 1,
+        "game_time": null,
+        "status": "closed",
+        "resulting_state_id": null,
+        "opened_at": null,
+        "submission_deadline": null,
+        "closed_at": null,
+        "created_at": "2026-10-30T11:52:55.057Z"
+      }
+    ],
+    "turn_stage": [],
+    "participant": [],
+    "role": [],
+    "player_team": [
+      {
+        "team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "name": "Blue",
+        "lead_participant_id": null,
+        "workspace_ref": null,
+        "created_at": "2026-10-30T11:52:55.065Z"
+      }
+    ],
+    "actor": [],
+    "capability": [],
+    "actor_relationship": [],
+    "strategic_objective": [],
+    "decision": [],
+    "turn_submission_package": [
+      {
+        "package_id": "f0c2168b-39f7-4b66-a7e5-29bfb06f1bbb",
+        "turn_id": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b",
+        "submitting_team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "revision": 1,
+        "receipt_status": "draft",
+        "schema_version": null,
+        "submitted_at": null,
+        "locked_at": null,
+        "notes": null,
+        "created_at": "2026-10-30T11:52:55.076Z"
+      },
+      {
+        "package_id": "6c7f839a-0ed2-4225-a442-8440cc7df9b7",
+        "turn_id": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b",
+        "submitting_team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "revision": 2,
+        "receipt_status": "accepted",
+        "schema_version": null,
+        "submitted_at": "2026-10-30T11:52:55.164Z",
+        "locked_at": "2026-10-30T11:52:55.166Z",
+        "notes": null,
+        "created_at": "2026-10-30T11:52:55.067Z"
+      }
+    ],
+    "move": [
+      {
+        "move_id": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+        "package_id": "f0c2168b-39f7-4b66-a7e5-29bfb06f1bbb",
+        "team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "turn_id": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b",
+        "version": 1,
+        "status": "draft",
+        "decision_id": null,
+        "created_at": "2026-10-30T11:52:55.085Z"
+      },
+      {
+        "move_id": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+        "package_id": "6c7f839a-0ed2-4225-a442-8440cc7df9b7",
+        "team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "turn_id": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b",
+        "version": 1,
+        "status": "resolved",
+        "decision_id": null,
+        "created_at": "2026-10-30T11:52:55.078Z"
+      }
+    ],
+    "action": [
+      {
+        "action_id": "438d6bff-898d-4cb0-be21-5ccf81183003",
+        "move_id": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+        "actor_id": null,
+        "action_class": "Action",
+        "statement": "Test action",
+        "timing": null,
+        "location": null,
+        "constraints": null,
+        "mission": null,
+        "forces": null,
+        "area": null,
+        "time_window": null,
+        "mission_type": null,
+        "capability_package": null,
+        "method": null,
+        "created_at": "2026-10-30T11:52:55.088Z"
+      },
+      {
+        "action_id": "d06d840b-5838-41db-8979-07a3e4a03269",
+        "move_id": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+        "actor_id": null,
+        "action_class": "Action",
+        "statement": "Other action",
+        "timing": null,
+        "location": null,
+        "constraints": null,
+        "mission": null,
+        "forces": null,
+        "area": null,
+        "time_window": null,
+        "mission_type": null,
+        "capability_package": null,
+        "method": null,
+        "created_at": "2026-10-30T11:52:55.091Z"
+      }
+    ],
+    "instrument_of_power": [
+      {
+        "iop_id": "c1a45529-d000-45ac-915f-7ef3e9497e53",
+        "action_id": "438d6bff-898d-4cb0-be21-5ccf81183003",
+        "category": "military",
+        "subcategory": null,
+        "responsible_actor_id": null
+      }
+    ],
+    "dependency": [
+      {
+        "dependency_id": "b02cb3e3-055b-4ac1-b794-033cd6050a53",
+        "move_id": null,
+        "action_id": "438d6bff-898d-4cb0-be21-5ccf81183003",
+        "type": "logistics",
+        "owner": "Blue",
+        "deadline": null,
+        "status": "pending"
+      }
+    ],
+    "risk": [
+      {
+        "risk_id": "77c97fd4-c2a0-4a13-86c5-d6de549dd239",
+        "move_id": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+        "action_id": null,
+        "statement": "Risk",
+        "likelihood": null,
+        "impact": null,
+        "mitigation": null
+      }
+    ],
+    "desired_effect": [
+      {
+        "desired_effect_id": "d1708b05-a9d6-4f8f-b1ce-d43d4f1074d3",
+        "action_id": "438d6bff-898d-4cb0-be21-5ccf81183003",
+        "effect": "Desired",
+        "affected_entity_type": null,
+        "affected_entity_id": null,
+        "desired_condition": null,
+        "horizon": null
+      }
+    ],
+    "information_artifact": [
+      {
+        "artifact_id": "d2b39c91-f0c6-4c57-a689-20209dce526a",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "artifact_type": "evidence",
+        "producer_id": null,
+        "title": "Test",
+        "valid_time_start": null,
+        "valid_time_end": null,
+        "visibility": null,
+        "content_uri": null,
+        "version": null,
+        "confidence": null,
+        "question": null,
+        "method": null,
+        "finding": null,
+        "observer_id": null,
+        "implication": null,
+        "headline": null,
+        "model_version": null,
+        "ms_inputs": null,
+        "ms_assumptions": null,
+        "ms_outputs": null,
+        "created_at": "2026-10-30T11:52:55.094Z"
+      }
+    ],
+    "artifact_chunk": [],
+    "information_release": [],
+    "rfi": [
+      {
+        "rfi_id": "7661660f-9aab-4bdd-a239-33741d70837f",
+        "requesting_team_id": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+        "turn_id": null,
+        "question": "Question",
+        "topic": null,
+        "priority": "medium",
+        "status": "closed",
+        "owner_participant_id": null,
+        "opened_at": "2026-10-30T11:52:55.264Z",
+        "due_at": null,
+        "closed_at": "2026-10-30T11:52:55.276Z",
+        "created_at": "2026-10-30T11:52:55.264Z"
+      }
+    ],
+    "rfi_response": [
+      {
+        "response_id": "7605f5e1-0086-410b-813e-bf8cff2effee",
+        "rfi_id": "7661660f-9aab-4bdd-a239-33741d70837f",
+        "artifact_id": null,
+        "content": "Answer",
+        "producer_id": null,
+        "confidence": null,
+        "responded_at": "2026-10-30T11:52:55.273Z"
+      }
+    ],
+    "world_state": [
+      {
+        "world_state_id": "f775d385-7f50-49d2-b653-28fa29db7ec7",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "version": "T0",
+        "game_time": null,
+        "variables": null,
+        "is_published": true,
+        "published_at": "2026-10-30T11:52:55.207Z",
+        "published_by": null,
+        "created_at": "2026-10-30T11:52:55.206Z"
+      }
+    ],
+    "perceived_situation": [],
+    "game_event": [
+      {
+        "event_id": "0e693618-1989-48bb-bd47-68999895bf93",
+        "game_id": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+        "turn_id": null,
+        "event_type": "case_reopened",
+        "game_time": null,
+        "recorded_at": "2026-10-30T11:52:55.257Z",
+        "recorded_by": null,
+        "payload": {
+          "database_user": "postgres",
+          "previous_resolved_at": "2026-10-30T11:52:55.245+00:00"
+        },
+        "related_package_id": null,
+        "related_case_id": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+        "related_release_id": null,
+        "related_transition_id": null,
+        "related_rfi_id": null
+      }
+    ],
+    "adjudication_method": [
+      {
+        "method_id": "a4bce249-7cdd-4b8e-9841-9c17ff9d8a32",
+        "type": "expert",
+        "version": "1",
+        "assumptions": null,
+        "applicability": null
+      }
+    ],
+    "adjudication_case": [
+      {
+        "case_id": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df",
+        "move_id": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+        "action_id": null,
+        "adjudicator_id": null,
+        "ruleset_id": "8da2ab7a-5f7a-460a-a709-0da85fb3b354",
+        "method_id": "a4bce249-7cdd-4b8e-9841-9c17ff9d8a32",
+        "track": null,
+        "rationale": null,
+        "status": "open",
+        "opened_at": "2026-10-30T11:52:55.220Z",
+        "resolved_at": null
+      },
+      {
+        "case_id": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+        "move_id": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+        "action_id": null,
+        "adjudicator_id": null,
+        "ruleset_id": "8da2ab7a-5f7a-460a-a709-0da85fb3b354",
+        "method_id": "a4bce249-7cdd-4b8e-9841-9c17ff9d8a32",
+        "track": null,
+        "rationale": "Reason",
+        "status": "reopened",
+        "opened_at": "2026-10-30T11:52:55.215Z",
+        "resolved_at": "2026-10-30T11:52:55.245Z"
+      }
+    ],
+    "combat_resolution_request": [],
+    "ms_run": [
+      {
+        "msrun_id": "cd2a7fc2-8369-421a-9bf4-c1c384f530cc",
+        "crr_id": null,
+        "case_id": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+        "model_version": null,
+        "configuration": null,
+        "inputs": null,
+        "run_time": null,
+        "created_at": "2026-10-30T11:52:55.237Z"
+      }
+    ],
+    "combat_results_support": [],
+    "outcome": [
+      {
+        "outcome_id": "a92d5dca-eeb8-4f5d-b074-4ba2ae03ee5f",
+        "case_id": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df",
+        "result": "Other",
+        "success_level": "full",
+        "rationale": null,
+        "uncertainty": null,
+        "created_at": "2026-10-30T11:52:55.227Z"
+      },
+      {
+        "outcome_id": "57e9cafc-d33f-4f85-b9e1-13d71d5eff80",
+        "case_id": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+        "result": "Corrected",
+        "success_level": "partial",
+        "rationale": null,
+        "uncertainty": null,
+        "created_at": "2026-10-30T11:52:55.224Z"
+      }
+    ],
+    "effect": [
+      {
+        "effect_id": "ae09e7d3-b4ee-4225-a8dc-840d15cc4bf9",
+        "outcome_id": "57e9cafc-d33f-4f85-b9e1-13d71d5eff80",
+        "affected_entity_type": null,
+        "affected_entity_id": null,
+        "effect_type": "attrition",
+        "magnitude": null,
+        "duration": null
+      }
+    ],
+    "state_transition": [],
+    "compartmented_interface": []
+  },
+  "edges": [
+    [
+      [
+        "SELECT game_id AS src, scenario_id AS tgt FROM scenario",
+        "GIWGGame",
+        "game_id",
+        "HAS_SCENARIO",
+        "Scenario",
+        "scenario_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT game_id AS src, ruleset_id AS tgt FROM rule_set WHERE game_id IS NOT NULL",
+        "GIWGGame",
+        "game_id",
+        "USES_RULE_SET",
+        "RuleSet",
+        "ruleset_id"
+      ],
+      [
+        {
+          "src": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+          "tgt": "8da2ab7a-5f7a-460a-a709-0da85fb3b354"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT game_id AS src, turn_id AS tgt FROM turn",
+        "GIWGGame",
+        "game_id",
+        "HAS_TURN",
+        "Turn",
+        "turn_id"
+      ],
+      [
+        {
+          "src": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+          "tgt": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT game_id AS src, team_id AS tgt FROM player_team",
+        "GIWGGame",
+        "game_id",
+        "HAS_TEAM",
+        "PlayerTeam",
+        "team_id"
+      ],
+      [
+        {
+          "src": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+          "tgt": "246d805b-8f8a-42d4-a8f7-dd41295c8a95"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT game_id AS src, world_state_id AS tgt FROM world_state",
+        "GIWGGame",
+        "game_id",
+        "MAINTAINS_STATE_HISTORY",
+        "WorldState",
+        "world_state_id"
+      ],
+      [
+        {
+          "src": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+          "tgt": "f775d385-7f50-49d2-b653-28fa29db7ec7"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT game_id AS src, event_id AS tgt FROM game_event",
+        "GIWGGame",
+        "game_id",
+        "RECORDS",
+        "GameEvent",
+        "event_id"
+      ],
+      [
+        {
+          "src": "9b915987-9a8f-47c7-a560-101ea538b3c1",
+          "tgt": "0e693618-1989-48bb-bd47-68999895bf93"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT turn_id AS src, stage_id AS tgt FROM turn_stage",
+        "Turn",
+        "turn_id",
+        "HAS_STAGE",
+        "TurnStage",
+        "stage_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT participant_id AS src, role_id AS tgt FROM participant_role",
+        "Participant",
+        "participant_id",
+        "IS_ASSIGNED",
+        "Role",
+        "role_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT team_id AS src, participant_id AS tgt FROM team_member",
+        "PlayerTeam",
+        "team_id",
+        "HAS_MEMBER",
+        "Participant",
+        "participant_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT team_id AS src, actor_id AS tgt FROM team_actor WHERE relationship = 'represents'",
+        "PlayerTeam",
+        "team_id",
+        "REPRESENTS",
+        "Actor",
+        "actor_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT team_id AS src, actor_id AS tgt FROM team_actor WHERE relationship = 'controls'",
+        "PlayerTeam",
+        "team_id",
+        "CONTROLS",
+        "Actor",
+        "actor_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT actor_id AS src, objective_id AS tgt FROM strategic_objective",
+        "Actor",
+        "actor_id",
+        "PURSUES",
+        "StrategicObjective",
+        "objective_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT actor_id AS src, capability_id AS tgt FROM capability",
+        "Actor",
+        "actor_id",
+        "HAS_CAPABILITY",
+        "Capability",
+        "capability_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT team_id AS src, decision_id AS tgt FROM decision",
+        "PlayerTeam",
+        "team_id",
+        "MAKES",
+        "Decision",
+        "decision_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT decision_id AS src, objective_id AS tgt FROM decision_objective",
+        "Decision",
+        "decision_id",
+        "SUPPORTS",
+        "StrategicObjective",
+        "objective_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT decision_id AS src, move_id AS tgt FROM move WHERE decision_id IS NOT NULL",
+        "Decision",
+        "decision_id",
+        "IS_FORMALIZED_IN",
+        "Move",
+        "move_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT submitting_team_id AS src, package_id AS tgt FROM turn_submission_package",
+        "PlayerTeam",
+        "team_id",
+        "SUBMITS_PACKAGE",
+        "TurnSubmissionPackage",
+        "package_id"
+      ],
+      [
+        {
+          "src": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+          "tgt": "f0c2168b-39f7-4b66-a7e5-29bfb06f1bbb"
+        },
+        {
+          "src": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+          "tgt": "6c7f839a-0ed2-4225-a442-8440cc7df9b7"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT package_id AS src, turn_id AS tgt FROM turn_submission_package",
+        "TurnSubmissionPackage",
+        "package_id",
+        "BELONGS_TO_TURN",
+        "Turn",
+        "turn_id"
+      ],
+      [
+        {
+          "src": "f0c2168b-39f7-4b66-a7e5-29bfb06f1bbb",
+          "tgt": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b"
+        },
+        {
+          "src": "6c7f839a-0ed2-4225-a442-8440cc7df9b7",
+          "tgt": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT package_id AS src, move_id AS tgt FROM move WHERE package_id IS NOT NULL",
+        "TurnSubmissionPackage",
+        "package_id",
+        "CONTAINS_MOVE",
+        "Move",
+        "move_id"
+      ],
+      [
+        {
+          "src": "f0c2168b-39f7-4b66-a7e5-29bfb06f1bbb",
+          "tgt": "bed85cf2-02a8-4dfa-925c-387d1e5018bc"
+        },
+        {
+          "src": "6c7f839a-0ed2-4225-a442-8440cc7df9b7",
+          "tgt": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT package_id AS src, artifact_id AS tgt FROM package_artifact",
+        "TurnSubmissionPackage",
+        "package_id",
+        "CITES_ARTIFACT",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      [
+        {
+          "src": "6c7f839a-0ed2-4225-a442-8440cc7df9b7",
+          "tgt": "d2b39c91-f0c6-4c57-a689-20209dce526a"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT team_id AS src, move_id AS tgt FROM move",
+        "PlayerTeam",
+        "team_id",
+        "SUBMITS",
+        "Move",
+        "move_id"
+      ],
+      [
+        {
+          "src": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+          "tgt": "bed85cf2-02a8-4dfa-925c-387d1e5018bc"
+        },
+        {
+          "src": "246d805b-8f8a-42d4-a8f7-dd41295c8a95",
+          "tgt": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT move_id AS src, turn_id AS tgt FROM move",
+        "Move",
+        "move_id",
+        "BELONGS_TO_TURN",
+        "Turn",
+        "turn_id"
+      ],
+      [
+        {
+          "src": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+          "tgt": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b"
+        },
+        {
+          "src": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+          "tgt": "4e4a4ecc-e9d4-49fc-b44c-bf38bdf3293b"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT move_id AS src, action_id AS tgt FROM action",
+        "Move",
+        "move_id",
+        "CONTAINS",
+        "Action",
+        "action_id"
+      ],
+      [
+        {
+          "src": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+          "tgt": "438d6bff-898d-4cb0-be21-5ccf81183003"
+        },
+        {
+          "src": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+          "tgt": "d06d840b-5838-41db-8979-07a3e4a03269"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT move_id AS src, artifact_id AS tgt FROM move_artifact",
+        "Move",
+        "move_id",
+        "USES",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      [
+        {
+          "src": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+          "tgt": "d2b39c91-f0c6-4c57-a689-20209dce526a"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT action_id AS src, iop_id AS tgt FROM instrument_of_power",
+        "Action",
+        "action_id",
+        "USES_INSTRUMENT",
+        "InstrumentOfPower",
+        "iop_id"
+      ],
+      [
+        {
+          "src": "438d6bff-898d-4cb0-be21-5ccf81183003",
+          "tgt": "c1a45529-d000-45ac-915f-7ef3e9497e53"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT action_id AS src, dependency_id AS tgt FROM dependency WHERE action_id IS NOT NULL",
+        "Action",
+        "action_id",
+        "HAS_DEPENDENCY",
+        "Dependency",
+        "dependency_id"
+      ],
+      [
+        {
+          "src": "438d6bff-898d-4cb0-be21-5ccf81183003",
+          "tgt": "b02cb3e3-055b-4ac1-b794-033cd6050a53"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT action_id AS src, risk_id AS tgt FROM risk WHERE action_id IS NOT NULL",
+        "Action",
+        "action_id",
+        "HAS_RISK",
+        "Risk",
+        "risk_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT action_id AS src, desired_effect_id AS tgt FROM desired_effect",
+        "Action",
+        "action_id",
+        "SEEKS",
+        "DesiredEffect",
+        "desired_effect_id"
+      ],
+      [
+        {
+          "src": "438d6bff-898d-4cb0-be21-5ccf81183003",
+          "tgt": "d1708b05-a9d6-4f8f-b1ce-d43d4f1074d3"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT rfi_id AS src, requesting_team_id AS tgt FROM rfi",
+        "RFI",
+        "rfi_id",
+        "REQUESTED_BY",
+        "PlayerTeam",
+        "team_id"
+      ],
+      [
+        {
+          "src": "7661660f-9aab-4bdd-a239-33741d70837f",
+          "tgt": "246d805b-8f8a-42d4-a8f7-dd41295c8a95"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT rfi_id AS src, owner_participant_id AS tgt FROM rfi WHERE owner_participant_id IS NOT NULL",
+        "RFI",
+        "rfi_id",
+        "OWNED_BY",
+        "Participant",
+        "participant_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT response_id AS src, rfi_id AS tgt FROM rfi_response",
+        "RFIResponse",
+        "response_id",
+        "RESPONDS_TO",
+        "RFI",
+        "rfi_id"
+      ],
+      [
+        {
+          "src": "7605f5e1-0086-410b-813e-bf8cff2effee",
+          "tgt": "7661660f-9aab-4bdd-a239-33741d70837f"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT artifact_id AS src, chunk_id AS tgt FROM artifact_chunk",
+        "InformationArtifact",
+        "artifact_id",
+        "HAS_CHUNK",
+        "ArtifactChunk",
+        "chunk_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT release_id AS src, artifact_id AS tgt FROM release_artifact",
+        "InformationRelease",
+        "release_id",
+        "RELEASES",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT release_id AS src, team_id AS tgt FROM release_audience",
+        "InformationRelease",
+        "release_id",
+        "IS_DELIVERED_TO",
+        "PlayerTeam",
+        "team_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT move_id AS src, case_id AS tgt FROM adjudication_case WHERE move_id IS NOT NULL",
+        "Move",
+        "move_id",
+        "IS_ADJUDICATED_BY",
+        "AdjudicationCase",
+        "case_id"
+      ],
+      [
+        {
+          "src": "bed85cf2-02a8-4dfa-925c-387d1e5018bc",
+          "tgt": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df"
+        },
+        {
+          "src": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+          "tgt": "73d26460-8ebd-44d2-84ee-d9098967df3d"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT case_id AS src, ruleset_id AS tgt FROM adjudication_case",
+        "AdjudicationCase",
+        "case_id",
+        "USES_VERSIONED_RULES",
+        "RuleSet",
+        "ruleset_id"
+      ],
+      [
+        {
+          "src": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df",
+          "tgt": "8da2ab7a-5f7a-460a-a709-0da85fb3b354"
+        },
+        {
+          "src": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+          "tgt": "8da2ab7a-5f7a-460a-a709-0da85fb3b354"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT case_id AS src, method_id AS tgt FROM adjudication_case",
+        "AdjudicationCase",
+        "case_id",
+        "USES_VERSIONED_METHOD",
+        "AdjudicationMethod",
+        "method_id"
+      ],
+      [
+        {
+          "src": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df",
+          "tgt": "a4bce249-7cdd-4b8e-9841-9c17ff9d8a32"
+        },
+        {
+          "src": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+          "tgt": "a4bce249-7cdd-4b8e-9841-9c17ff9d8a32"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT case_id AS src, artifact_id AS tgt FROM case_evidence",
+        "AdjudicationCase",
+        "case_id",
+        "CONSIDERS",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      [
+        {
+          "src": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+          "tgt": "d2b39c91-f0c6-4c57-a689-20209dce526a"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT case_id AS src, msrun_id AS tgt FROM ms_run WHERE case_id IS NOT NULL",
+        "AdjudicationCase",
+        "case_id",
+        "USES_RUN",
+        "MSRun",
+        "msrun_id"
+      ],
+      [
+        {
+          "src": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+          "tgt": "cd2a7fc2-8369-421a-9bf4-c1c384f530cc"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT case_id AS src, outcome_id AS tgt FROM outcome",
+        "AdjudicationCase",
+        "case_id",
+        "PRODUCES",
+        "Outcome",
+        "outcome_id"
+      ],
+      [
+        {
+          "src": "e6422c2f-c91c-43b5-aef7-d84c6cdd65df",
+          "tgt": "a92d5dca-eeb8-4f5d-b074-4ba2ae03ee5f"
+        },
+        {
+          "src": "73d26460-8ebd-44d2-84ee-d9098967df3d",
+          "tgt": "57e9cafc-d33f-4f85-b9e1-13d71d5eff80"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT outcome_id AS src, effect_id AS tgt FROM effect WHERE outcome_id IS NOT NULL",
+        "Outcome",
+        "outcome_id",
+        "PRODUCES",
+        "Effect",
+        "effect_id"
+      ],
+      [
+        {
+          "src": "57e9cafc-d33f-4f85-b9e1-13d71d5eff80",
+          "tgt": "ae09e7d3-b4ee-4225-a8dc-840d15cc4bf9"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT effect_id AS src, transition_id AS tgt FROM transition_effect",
+        "Effect",
+        "effect_id",
+        "CONTRIBUTES_TO",
+        "StateTransition",
+        "transition_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT transition_id AS src, effect_id AS tgt FROM transition_effect",
+        "StateTransition",
+        "transition_id",
+        "APPLIES_EFFECT",
+        "Effect",
+        "effect_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT transition_id AS src, from_state_id AS tgt FROM state_transition",
+        "StateTransition",
+        "transition_id",
+        "FROM_STATE",
+        "WorldState",
+        "world_state_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT transition_id AS src, to_state_id AS tgt FROM state_transition",
+        "StateTransition",
+        "transition_id",
+        "TO_STATE",
+        "WorldState",
+        "world_state_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT transition_id AS src, authorized_by_case_id AS tgt FROM state_transition",
+        "StateTransition",
+        "transition_id",
+        "AUTHORIZED_BY",
+        "AdjudicationCase",
+        "case_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT crs_id AS src, receiving_team_id AS tgt FROM combat_results_support",
+        "CombatResultsSupport",
+        "crs_id",
+        "DELIVERS_SUPPORT_TO",
+        "PlayerTeam",
+        "team_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT crs_id AS src, case_id AS tgt FROM combat_results_support WHERE case_id IS NOT NULL",
+        "CombatResultsSupport",
+        "crs_id",
+        "GENERATED_UNDER",
+        "AdjudicationCase",
+        "case_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT move_id src, dependency_id tgt FROM dependency WHERE move_id IS NOT NULL",
+        "Move",
+        "move_id",
+        "HAS_DEPENDENCY",
+        "Dependency",
+        "dependency_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT move_id src, risk_id tgt FROM risk WHERE move_id IS NOT NULL",
+        "Move",
+        "move_id",
+        "HAS_RISK",
+        "Risk",
+        "risk_id"
+      ],
+      [
+        {
+          "src": "5b4c9376-c5b7-4d49-bfe7-9ac7a11a834b",
+          "tgt": "77c97fd4-c2a0-4a13-86c5-d6de549dd239"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT action_id src, case_id tgt FROM adjudication_case WHERE action_id IS NOT NULL",
+        "Action",
+        "action_id",
+        "IS_ADJUDICATED_BY",
+        "AdjudicationCase",
+        "case_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT outcome_id src, desired_effect_id tgt FROM outcome_desired_effect",
+        "Outcome",
+        "outcome_id",
+        "EVALUATES",
+        "DesiredEffect",
+        "desired_effect_id"
+      ],
+      [
+        {
+          "src": "57e9cafc-d33f-4f85-b9e1-13d71d5eff80",
+          "tgt": "d1708b05-a9d6-4f8f-b1ce-d43d4f1074d3"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT rfi_id src, move_id tgt FROM move_rfi",
+        "RFI",
+        "rfi_id",
+        "RELATED_TO_MOVE",
+        "Move",
+        "move_id"
+      ],
+      [
+        {
+          "src": "7661660f-9aab-4bdd-a239-33741d70837f",
+          "tgt": "bed85cf2-02a8-4dfa-925c-387d1e5018bc"
+        }
+      ]
+    ],
+    [
+      [
+        "SELECT relationship_id src, actor_a_id tgt FROM actor_relationship",
+        "ActorRelationship",
+        "relationship_id",
+        "FROM_ACTOR",
+        "Actor",
+        "actor_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT relationship_id src, actor_b_id tgt FROM actor_relationship",
+        "ActorRelationship",
+        "relationship_id",
+        "TO_ACTOR",
+        "Actor",
+        "actor_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT game_id src, relationship_id tgt FROM actor_relationship",
+        "GIWGGame",
+        "game_id",
+        "HAS_ACTOR_RELATIONSHIP",
+        "ActorRelationship",
+        "relationship_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT perceived_id src, owner_team_id tgt FROM perceived_situation",
+        "PerceivedSituation",
+        "perceived_id",
+        "PERCEIVED_BY",
+        "PlayerTeam",
+        "team_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT perceived_id src, turn_id tgt FROM perceived_situation WHERE turn_id IS NOT NULL",
+        "PerceivedSituation",
+        "perceived_id",
+        "AS_OF_TURN",
+        "Turn",
+        "turn_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT game_id src, interface_id tgt FROM compartmented_interface",
+        "GIWGGame",
+        "game_id",
+        "HAS_INTERFACE",
+        "CompartmentedInterface",
+        "interface_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT interface_id src, turn_id tgt FROM compartmented_interface WHERE turn_id IS NOT NULL",
+        "CompartmentedInterface",
+        "interface_id",
+        "BELONGS_TO_TURN",
+        "Turn",
+        "turn_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT interface_id src, provenance_ref tgt FROM compartmented_interface WHERE provenance_ref IS NOT NULL",
+        "CompartmentedInterface",
+        "interface_id",
+        "CITES_ARTIFACT",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT crr_id src, action_id tgt FROM combat_resolution_request",
+        "CombatResolutionRequest",
+        "crr_id",
+        "RESOLVES_ACTION",
+        "Action",
+        "action_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT crr_id src, case_id tgt FROM combat_resolution_request WHERE case_id IS NOT NULL",
+        "CombatResolutionRequest",
+        "crr_id",
+        "GENERATED_UNDER",
+        "AdjudicationCase",
+        "case_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT msrun_id src, crr_id tgt FROM ms_run WHERE crr_id IS NOT NULL",
+        "MSRun",
+        "msrun_id",
+        "RESPONDS_TO",
+        "CombatResolutionRequest",
+        "crr_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT response_id src, artifact_id tgt FROM rfi_response WHERE artifact_id IS NOT NULL",
+        "RFIResponse",
+        "response_id",
+        "USES_ARTIFACT",
+        "InformationArtifact",
+        "artifact_id"
+      ],
+      []
+    ],
+    [
+      [
+        "SELECT action_id src, actor_id tgt FROM action WHERE actor_id IS NOT NULL",
+        "Action",
+        "action_id",
+        "PERFORMED_BY",
+        "Actor",
+        "actor_id"
+      ],
+      []
+    ]
+  ]
+}

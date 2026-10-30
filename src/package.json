@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"test:sql":"node tests/postgres_smoke.mjs"},"devDependencies":{"@electric-sql/pglite":"0.5.13"}}

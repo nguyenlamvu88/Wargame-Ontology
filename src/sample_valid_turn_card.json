@@ -1,0 +1,83 @@
+{
+  "package_id": "550e8400-e29b-41d4-a716-446655440000",
+  "turn_id": "550e8400-e29b-41d4-a716-446655440001",
+  "submitting_team_id": "550e8400-e29b-41d4-a716-446655440002",
+  "revision": 1,
+  "receipt_status": "submitted",
+  "schema_version": "1.2",
+  "submitted_at": "2026-10-29T14:30:00Z",
+  "moves": [
+    {
+      "move_id": "550e8400-e29b-41d4-a716-446655440010",
+      "version": 1,
+      "status": "submitted",
+      "decision_id": "550e8400-e29b-41d4-a716-446655440011",
+      "actions": [
+        {
+          "action_id": "550e8400-e29b-41d4-a716-446655440020",
+          "action_class": "CombatAction",
+          "actor_id": "550e8400-e29b-41d4-a716-446655440021",
+          "statement": "Conduct defensive counter-air CAP over Sector Alpha",
+          "timing": "D+14 0600Z - D+15 0600Z",
+          "location": "Sector Alpha (24N 122E)",
+          "constraints": "ROE Bravo; weapons tight beyond 50nm buffer",
+          "mission": "Defensive Counter-Air (DCA)",
+          "forces": "1st Fighter Wing (2x F-35A Squadrons, 1x E-3G)",
+          "area": "Sector Alpha Air Defense Identification Zone",
+          "time_window": "H+0 to H+24",
+          "mission_type": "Air Superiority / DCA",
+          "capability_package": "5th Gen DCA + AEW&C",
+          "method": "BVR intercept supported by airborne early warning",
+          "instruments_of_power": [
+            {
+              "category": "military",
+              "subcategory": "air_defense"
+            }
+          ],
+          "dependencies": [
+            {
+              "type": "logistics",
+              "owner": "Blue Tanker Cell",
+              "deadline": "2026-10-29T12:00:00Z",
+              "status": "satisfied"
+            }
+          ],
+          "risks": [
+            {
+              "statement": "Tanker vulnerability to long-range SAMs if pushed forward",
+              "likelihood": "medium",
+              "impact": "high",
+              "mitigation": "Maintain tanker orbits 150nm aft of FEBA"
+            }
+          ],
+          "desired_effects": [
+            {
+              "effect": "Deny Red air superiority over Sector Alpha",
+              "affected_entity_type": "Actor",
+              "desired_condition": "Red air sorties attrited >= 25% or forced to abort",
+              "horizon": "Turn 1 (D+14 to D+21)"
+            }
+          ]
+        }
+      ],
+      "cited_artifact_ids": [
+        "550e8400-e29b-41d4-a716-446655440030"
+      ],
+      "rfi_ids": [
+        "550e8400-e29b-41d4-a716-446655440040"
+      ]
+    }
+  ],
+  "ms_packages": [
+    {
+      "artifact_id": "550e8400-e29b-41d4-a716-446655440030",
+      "model_version": "AFSIM-2.9.1",
+      "inputs": {
+        "blue_sorties": 48,
+        "red_threat_laydown": "IADS-Baseline-v2"
+      },
+      "assumptions": "Standard atmospheric degradation; EMCON Alpha prior to merge"
+    }
+  ],
+  "notes": "Submitted on schedule for Turn 1 adjudication."
+}

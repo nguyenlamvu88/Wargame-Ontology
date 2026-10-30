@@ -1,0 +1,577 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://giwg.example/schemas/turn-submission-package.json",
+  "title": "GIWG Turn Submission Package (Turn Card)",
+  "description": "Schema-validated player handoff to adjudication (v1.2). Aligns with TurnSubmissionPackage + Move + Action entities, enforces additionalProperties:false at all levels, and validates receipt_status state invariants.",
+  "type": "object",
+  "required": [
+    "package_id",
+    "turn_id",
+    "submitting_team_id",
+    "revision",
+    "receipt_status",
+    "moves"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "package_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "turn_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "submitting_team_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "receipt_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "locked",
+        "accepted",
+        "returned"
+      ]
+    },
+    "schema_version": {
+      "type": "string",
+      "default": "1.2",
+      "maxLength": 20,
+      "const": "1.2"
+    },
+    "submitted_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "locked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "cited_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true
+    },
+    "moves": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "move_id",
+          "version",
+          "status",
+          "actions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "move_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "submitted",
+              "under_adjudication",
+              "resolved"
+            ],
+            "maxLength": 30
+          },
+          "decision_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "dependencies": {
+            "$ref": "#/$defs/dependencyList"
+          },
+          "risks": {
+            "$ref": "#/$defs/riskList"
+          },
+          "actions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "action_id",
+                "action_class",
+                "statement"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "action_class": {
+                  "type": "string",
+                  "enum": [
+                    "Action",
+                    "MilitaryAction",
+                    "CombatAction"
+                  ]
+                },
+                "actor_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "uuid"
+                },
+                "statement": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "timing": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "location": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 200
+                },
+                "constraints": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "mission": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "forces": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "area": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 200
+                },
+                "time_window": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "mission_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "capability_package": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "method": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 100
+                },
+                "instruments_of_power": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "category"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "iop_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "diplomatic",
+                          "information",
+                          "military",
+                          "economic",
+                          "other"
+                        ]
+                      },
+                      "subcategory": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 100
+                      },
+                      "responsible_actor_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      }
+                    }
+                  }
+                },
+                "dependencies": {
+                  "$ref": "#/$defs/dependencyList"
+                },
+                "risks": {
+                  "$ref": "#/$defs/riskList"
+                },
+                "desired_effects": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "effect"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "desired_effect_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "effect": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "affected_entity_type": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 50
+                      },
+                      "affected_entity_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "desired_condition": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "horizon": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 50
+                      }
+                    }
+                  }
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "required": [
+                      "action_class"
+                    ],
+                    "properties": {
+                      "action_class": {
+                        "enum": [
+                          "MilitaryAction",
+                          "CombatAction"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "mission",
+                      "forces"
+                    ],
+                    "properties": {
+                      "mission": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "forces": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": [
+                      "action_class"
+                    ],
+                    "properties": {
+                      "action_class": {
+                        "enum": [
+                          "CombatAction"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "method"
+                    ],
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "cited_artifact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "rfi_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "ms_packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "artifact_id",
+          "model_version"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "model_version": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "inputs": {
+            "type": "object"
+          },
+          "assumptions": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "outputs": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "receipt_status": {
+            "enum": [
+              "submitted",
+              "locked",
+              "accepted"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "submitted_at"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "receipt_status": {
+            "enum": [
+              "locked",
+              "accepted"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "locked_at"
+        ],
+        "properties": {
+          "locked_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "dependencyList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "owner",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "dependency_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "owner": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "deadline": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 30,
+            "enum": [
+              "pending",
+              "satisfied",
+              "blocked",
+              "waived"
+            ]
+          }
+        }
+      }
+    },
+    "riskList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "statement"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "risk_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "likelihood": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 30
+          },
+          "impact": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 30
+          },
+          "mitigation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

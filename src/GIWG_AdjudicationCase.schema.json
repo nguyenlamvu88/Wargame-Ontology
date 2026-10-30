@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://giwg.example/schemas/adjudication-case.json",
+  "title": "GIWG Adjudication Case",
+  "description": "Formal evaluation of a submitted move or action, including versioned rules/methods, evidence, M&S runs, outcomes, and effects (v1.2).",
+  "type": "object",
+  "required": [
+    "case_id",
+    "ruleset_id",
+    "method_id",
+    "track",
+    "status",
+    "opened_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "move_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "action_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "adjudicator_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "ruleset_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "method_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "track": {
+      "type": "string",
+      "enum": [
+        "kinetic",
+        "DIE",
+        "SAP",
+        "other"
+      ]
+    },
+    "rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "reopened"
+      ],
+      "maxLength": 30
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "evidence_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true
+    },
+    "ms_run_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "outcome_id",
+          "result",
+          "success_level"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "outcome_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "success_level": {
+            "type": "string",
+            "enum": [
+              "full",
+              "partial",
+              "failed",
+              "inconclusive"
+            ]
+          },
+          "rationale": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uncertainty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evaluated_desired_effect_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "effect_id",
+                "effect_type"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "effect_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "affected_entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 50
+                },
+                "affected_entity_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "uuid"
+                },
+                "effect_type": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50,
+                  "pattern": "\\S"
+                },
+                "magnitude": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 50
+                },
+                "duration": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 50
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "move_id"
+      ],
+      "properties": {
+        "move_id": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "required": [
+        "action_id"
+      ],
+      "properties": {
+        "action_id": {
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "resolved"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "outcomes",
+          "rationale",
+          "resolved_at"
+        ],
+        "properties": {
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "outcomes": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

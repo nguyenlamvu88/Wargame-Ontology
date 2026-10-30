@@ -1,0 +1,29 @@
+{
+  "package_id": "not-a-valid-uuid",
+  "turn_id": "550e8400-e29b-41d4-a716-446655440001",
+  "submitting_team_id": "550e8400-e29b-41d4-a716-446655440002",
+  "revision": 0,
+  "receipt_status": "locked",
+  "submitted_at": null,
+  "moves": [
+    {
+      "move_id": "550e8400-e29b-41d4-a716-446655440010",
+      "version": 1,
+      "status": "draft",
+      "undeclared_move_field": "rejected by v1.1 schema additionalProperties:false",
+      "actions": [
+        {
+          "action_id": "550e8400-e29b-41d4-a716-446655440020",
+          "action_class": "CombatAction",
+          "statement": "",
+          "undeclared_action_field": "also rejected by v1.1 schema",
+          "instruments_of_power": [
+            {
+              "category": "cyber_magic"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

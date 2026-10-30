@@ -1,0 +1,79 @@
+{
+  "turn": {
+    "planned": [
+      "open"
+    ],
+    "open": [
+      "locked"
+    ],
+    "locked": [
+      "adjudicated"
+    ],
+    "adjudicated": [
+      "closed"
+    ],
+    "closed": []
+  },
+  "turn_submission_package": {
+    "draft": [
+      "submitted"
+    ],
+    "submitted": [
+      "locked",
+      "returned"
+    ],
+    "returned": [
+      "submitted"
+    ],
+    "locked": [
+      "accepted"
+    ],
+    "accepted": []
+  },
+  "move": {
+    "draft": [
+      "submitted"
+    ],
+    "submitted": [
+      "under_adjudication",
+      "draft"
+    ],
+    "under_adjudication": [
+      "resolved"
+    ],
+    "resolved": []
+  },
+  "adjudication_case": {
+    "open": [
+      "in_progress"
+    ],
+    "in_progress": [
+      "resolved"
+    ],
+    "resolved": [
+      "reopened"
+    ],
+    "reopened": [
+      "in_progress",
+      "resolved"
+    ]
+  },
+  "rfi": {
+    "open": [
+      "assigned",
+      "escalated"
+    ],
+    "assigned": [
+      "escalated",
+      "answered"
+    ],
+    "escalated": [
+      "assigned",
+      "answered"
+    ],
+    "answered": [
+      "closed"
+    ],
+    "closed": []
+  }
+}

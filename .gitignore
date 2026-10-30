@@ -1,0 +1,10 @@
+.env
+__pycache__/
+.pytest_cache/
+data/*
+!data/README.md
+
+.venv/
+node_modules/
+*.dump
+*.zip
