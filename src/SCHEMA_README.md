@@ -1,13 +1,13 @@
 # Wargame implementation package
 
 Corrected implementation draft, 30 October 2026. PostgreSQL is the source of record;
-Neo4j is a disposable read-only projection. This package is not an application,
-identity provider, document parser, or an operational authorization system.
+Neo4j is a disposable read-only projection. The source package includes document extraction/search modules. The full Docker
+package adds the local web application; neither provides operational authorization.
 
 ## Start with PostgreSQL
 
 Use an empty development database. PostgreSQL 14+ is the intended target;
-execution here was against PostgreSQL 18.6 through PGlite, not a standalone server.
+tests use PostgreSQL 18.6 through PGlite and real PostgreSQL/Neo4j containers in GitHub Actions.
 
 ```bash
 python -m venv .venv
@@ -27,8 +27,9 @@ must normalize nested payloads and insert child records transactionally.
 ## Initial database installation
 
 This is the initial implementation. Apply Wargame_Schema_PostgreSQL.sql once to an
-empty database. There is no prior release or upgrade script in this package.
-The schema contains **50 tables**, **3 views**, and **37 projected node classes**.
+empty database. For an existing foundation database, apply migrations/shared_materials.sql inside
+a transaction. It preserves data and is repeatable; do not rerun the initial DDL.
+The schema contains **52 tables**, **3 views**, and **37 projected node classes**.
 Relational association tables become graph edges rather than extra nodes.
 
 ## Workflow policy
@@ -69,9 +70,8 @@ users table ownership, trigger-disable, TRUNCATE, workflow policy editing, or
 superuser privileges. This package does not provision production database roles.
 
 A transition/effect association may be added after case resolution to apply an
-already fixed effect. It does not edit the effect or its outcome. Original source
-artifacts referenced by frozen links still need an immutable/versioned document
-storage policy in the application.
+already fixed effect. It does not edit the effect or its outcome. Uploaded original bytes, artifact identity and extracted passages are now immutable.
+New source revisions preserve earlier citation IDs. See SHARED_MATERIALS.md.
 
 ## JSON contract changes
 
@@ -128,13 +128,13 @@ nodes are replaced on the next refresh. Live Neo4j Community 5.26.0 tests passed
 repeat refreshes, property/label/deletion cleanup, endpoint-failure rollback,
 and unmanaged-data protection. The tested PostgreSQL fixture contained 26 nodes
 and 38 relationships. The live graph writer was fed an exported PGlite snapshot;
-the complete psycopg-to-standalone-PostgreSQL connection path remains untested.
+the full psycopg-to-PostgreSQL-to-Neo4j path is also exercised by Docker CI.
 
 ## Run the checks
 
 ```bash
 python -m pip install -r requirements-dev.txt
-python -m pytest tests/test_validation.py -q
+python -m pytest tests -q
 npm ci
 npm run test:sql
 # With a NEW, EMPTY, disposable Neo4j database and WARGAME_NEO4J_* variables set:
@@ -143,7 +143,7 @@ python tests/neo4j_live.py tests/postgres_synthetic_snapshot.json
 
 The SQL test uses the real PostgreSQL engine compiled for WebAssembly via PGlite.
 It omits pgcrypto/uuid-ossp extension declarations because built-in UUID generation
-is available there; standalone server extension installation remains untested.
+is available there; Docker CI also exercises server extension installation.
 To regenerate the graph fixture on Linux/macOS:
 `WARGAME_SNAPSHOT_OUT=tests/postgres_synthetic_snapshot.json npm run test:sql`.
 The live graph test creates constraints and test records, and deliberately deletes
@@ -161,8 +161,12 @@ concurrency/deadlock behavior and production role grants were not exercised.
 - etl_postgres_to_neo4j.py, graph_mapping.json, Wargame_Schema_Neo4j.cypher.
 - tests/, locked dependency files, TEST_RESULTS.md.
 
-The earlier README referenced an Excel dictionary, requirements DOCX and ontology
-JSON that were not supplied here. They were not regenerated or verified. A user
-interface, transactional ingestion adapter, identity/authorization integration,
-source-document extraction, complete cross-game integrity policy, and production
-backup/restore operations remain application/deployment work.
+Document extraction and source-evidence semantics, storage fields, API routes,
+limits and migration instructions are documented in SHARED_MATERIALS.md (included
+in this implementation archive). Shared materials are source claims, not automatically
+approved Actors, Actions or WorldState records. Source metadata lives on
+InformationArtifact; original bytes stay in document_source and are excluded from
+Neo4j. CITES_PASSAGE and SUPERSEDES extend the relationship vocabulary.
+
+Authentication/roles, AI answers, reviewed fact/entity extraction, full cross-game
+integrity policy and production deployment remain future work.

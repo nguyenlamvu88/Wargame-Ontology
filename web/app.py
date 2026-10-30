@@ -5,10 +5,11 @@ import sys
 from pathlib import Path
 from uuid import uuid4
 from wsgiref.simple_server import make_server
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs, quote
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'docker')]
+SOURCE = ROOT / 'src' if (ROOT / 'src').is_dir() else ROOT
+sys.path[:0] = [str(SOURCE), str(ROOT / 'docker')]
 import psycopg
 from psycopg import sql
 from psycopg.rows import dict_row
@@ -16,8 +17,11 @@ from psycopg.types.json import Jsonb
 from validate_turn_card import validate_turn_card
 from manage import configure
 from etl_postgres_to_neo4j import sync_postgres_to_neo4j
-SCHEMA = json.loads((ROOT / 'src/Wargame_TurnSubmissionPackage.schema.json').read_text())
+from shared_materials import (upload_material, process_material, list_materials, material_detail,
+    original_material, search_materials, passage_detail, as_uuid)
+SCHEMA = json.loads((SOURCE / 'Wargame_TurnSubmissionPackage.schema.json').read_text())
 LIMIT = 2 * 1024 * 1024
+UPLOAD_LIMIT = 29 * 1024 * 1024
 
 
 def uid():
@@ -101,6 +105,16 @@ def import_card(doc, dry_run=False):
                 insert(pg, 'move_artifact', {'move_id':m['move_id'], 'artifact_id':artifact_id})
             for rfi_id in m.get('rfi_ids', []):
                 insert(pg, 'move_rfi', {'move_id':m['move_id'], 'rfi_id':rfi_id})
+        def citations(parent, move_id=None):
+            for chunk_id in parent.get('cited_chunk_ids', []):
+                # SQL trigger enforces same game, ready source and move/package scope.
+                insert(pg, 'submission_citation', {'package_id':doc['package_id'], 'move_id':move_id, 'chunk_id':chunk_id})
+                artifact_id=pg.execute('SELECT artifact_id FROM artifact_chunk WHERE chunk_id=%s',(chunk_id,)).fetchone()['artifact_id']
+                pg.execute('INSERT INTO package_artifact(package_id,artifact_id) VALUES (%s,%s) ON CONFLICT DO NOTHING',(doc['package_id'],artifact_id))
+                if move_id:
+                    pg.execute('INSERT INTO move_artifact(move_id,artifact_id) VALUES (%s,%s) ON CONFLICT DO NOTHING',(move_id,artifact_id))
+        citations(doc)
+        for m in doc['moves']: citations(m,m['move_id'])
         # Store the complete original exchange document, including its timestamps.
         source_id = uid()
         insert(pg, 'information_artifact', {'artifact_id':source_id, 'game_id':gid, 'artifact_type':'other', 'title':'Imported turn card ' + doc['package_id']})
@@ -132,7 +146,19 @@ def overview():
     with connection() as pg:
         contexts=pg.execute('SELECT g.game_id,g.name AS game,t.turn_id,t.turn_number,t.status,p.team_id,p.name AS team FROM wargame_game g JOIN turn t USING(game_id) JOIN player_team p USING(game_id) ORDER BY g.created_at DESC,t.turn_number LIMIT 200').fetchall()
         packages=pg.execute('SELECT s.package_id,s.receipt_status,s.revision,s.submitted_at,g.name AS game,t.turn_number,p.name AS team,(SELECT count(*) FROM move m WHERE m.package_id=s.package_id) AS moves FROM turn_submission_package s JOIN turn t USING(turn_id) JOIN wargame_game g USING(game_id) JOIN player_team p ON p.team_id=s.submitting_team_id ORDER BY s.created_at DESC LIMIT 100').fetchall()
-    return {'contexts':contexts,'packages':packages}
+        games=pg.execute('SELECT game_id,name FROM wargame_game ORDER BY created_at DESC LIMIT 500').fetchall()
+    return {'contexts':contexts,'packages':packages,'games':games}
+
+
+def evidence(package):
+    with connection() as pg:
+        rows=pg.execute('''SELECT sc.package_id,sc.move_id,c.chunk_id,c.artifact_id,c.text_excerpt,c.source_locator,a.title,a.source_revision
+          FROM submission_citation sc JOIN artifact_chunk c USING(chunk_id) JOIN information_artifact a USING(artifact_id)
+          WHERE sc.package_id=%s ORDER BY sc.created_at''',(as_uuid(package),)).fetchall()
+    from shared_materials import locator_label
+    for row in rows: row['citation']=locator_label(row['source_locator'])
+    return {'citations':rows}
+
 
 
 def application(environ, start_response):
@@ -149,6 +175,22 @@ def application(environ, start_response):
                 with connection() as pg: pg.execute('SELECT 1')
                 result={'ready':True}
             elif method == 'GET' and path == '/api/overview': result=overview()
+            elif method == 'GET' and path.startswith('/api/materials/') and path.endswith('/original'):
+                source=original_material(path.split('/')[3])
+                body=bytes(source['original_bytes'])
+                headers.extend([('Content-Type',source['source_mime_type']),('Content-Disposition',"attachment; filename*=UTF-8''"+quote(source['source_filename'],safe='')),('Content-Length',str(len(body)))])
+                start_response(status,headers)
+                return [body]
+            elif method == 'GET':
+                query=parse_qs(environ.get('QUERY_STRING',''))
+                if path=='/api/materials': result={'materials':list_materials(query.get('game_id',[''])[0])}
+                elif path=='/api/search': result=search_materials(query.get('game_id',[''])[0],query.get('q',[''])[0],query.get('history',['false'])[0]=='true')
+                elif path=='/api/evidence': result=evidence(query.get('package_id',[''])[0])
+                elif path.startswith('/api/materials/'): result=material_detail(path.split('/')[3])
+                elif path.startswith('/api/passages/'): result=passage_detail(path.split('/')[3])
+                else:
+                    status='404 Not Found'
+                    result={'error':'Not found'}
             elif method == 'POST':
                 # Block cross-site form posts and browser requests from another origin.
                 origin=environ.get('HTTP_ORIGIN')
@@ -157,9 +199,12 @@ def application(environ, start_response):
                 if environ.get('CONTENT_TYPE','').split(';')[0] != 'application/json':
                     raise ValueError('Use application/json.')
                 length=int(environ.get('CONTENT_LENGTH') or 0)
-                if not 0 < length <= LIMIT: raise ValueError('Request must be between 1 byte and 2 MB.')
+                limit=UPLOAD_LIMIT if path=='/api/materials/upload' else LIMIT
+                if not 0 < length <= limit: raise ValueError('Request exceeds the allowed size.')
                 data=json.loads(environ['wsgi.input'].read(length))
-                if path == '/api/example': result=new_example()
+                if path == '/api/materials/upload': result=upload_material(data)
+                elif path == '/api/materials/retry': result=process_material(data.get('artifact_id') if isinstance(data,dict) else None)
+                elif path == '/api/example': result=new_example()
                 elif path == '/api/validate': result=import_card(data, dry_run=True)
                 elif path == '/api/import': result=import_card(data)
                 elif path == '/api/sync':

@@ -13,7 +13,17 @@ try {
  console.log((await one('select version()')).version);
  let sql=fs.readFileSync(path.join(root,'Wargame_Schema_PostgreSQL.sql'),'utf8').replace(/^CREATE EXTENSION[^;]+;/gm,'');
  await db.exec(sql);
- ok((await one("select count(*)::int n from information_schema.tables where table_schema='public' and table_type='BASE TABLE'")).n===50,'50 tables created');
+ ok((await one("select count(*)::int n from information_schema.tables where table_schema='public' and table_type='BASE TABLE'")).n===52,'52 tables created');
+ const migration=fs.readFileSync(path.join(root,'migrations/shared_materials.sql'),'utf8');
+ const priorDB=new PGlite();
+ try {
+  await priorDB.exec(sql.split('-- Shared materials and passage-level citations')[0]+'COMMIT;');
+  await priorDB.exec("INSERT INTO wargame_game(name) VALUES ('Preserved during migration')");
+  await priorDB.exec('BEGIN;'+migration+'COMMIT;');
+  await priorDB.exec('BEGIN;'+migration+'COMMIT;');
+  ok((await priorDB.query('SELECT count(*)::int n FROM wargame_game')).rows[0].n===1,'existing records preserved across repeated migration');
+  ok((await priorDB.query("SELECT count(*)::int n FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'")).rows[0].n===52,'prior schema upgraded to 52 tables');
+ } finally {await priorDB.close();}
  const g=(await one("insert into wargame_game(name) values ('Test') returning game_id")).game_id;
  const t=(await one('insert into turn(game_id,turn_number) values ($1,1) returning turn_id',[g])).turn_id;
  const team=(await one("insert into player_team(game_id,name) values ($1,'Blue') returning team_id",[g])).team_id;
@@ -100,6 +110,33 @@ try {
  await reject('last answered response cannot be removed','delete from rfi_response where rfi_id=$1',[r],/last response/);
  await rows('insert into move_rfi values ($1,$2)',[m2,r]);
  ok(true,'move/RFI linking table usable');
+ // Ready source evidence and locked-package citation guards.
+ const source=(await one("insert into information_artifact(game_id,artifact_type,title,source_filename,source_family_id,source_revision,processing_status) values ($1,'other','Shared source','source.pdf',gen_random_uuid(),1,'processing') returning artifact_id",[g])).artifact_id;
+ await rows("insert into document_source values ($1,decode('25504446','hex'))",[source]);
+ const chunk=(await one("insert into artifact_chunk(artifact_id,text_excerpt,source_locator) values ($1,'Blue team supply kits','{\"kind\":\"page\",\"page\":1}') returning chunk_id",[source])).chunk_id;
+ await reject('processing source cannot be cited','insert into submission_citation(package_id,move_id,chunk_id) values ($1,$2,$3)',[p2,m2,chunk],/ready passage/);
+ await rows("update information_artifact set processing_status='ready' where artifact_id=$1",[source]);
+ const citation=(await one('insert into submission_citation(package_id,move_id,chunk_id) values ($1,$2,$3) returning citation_id',[p2,m2,chunk])).citation_id;
+ ok(true,'same-game ready passage citation accepted');
+ const p3=(await one('insert into turn_submission_package(turn_id,submitting_team_id) values ($1,$2) returning package_id',[t,team])).package_id;
+ await reject('cited move cannot be reparented','update move set package_id=$1 where move_id=$2',[p3,m2],/foreign key constraint/);
+ await reject('cited turn cannot change game','update turn set game_id=gen_random_uuid() where turn_id=$1',[t],/Cited turn/);
+ await reject('citation cannot mismatch move/package','insert into submission_citation(package_id,move_id,chunk_id) values ($1,$2,$3)',[p2,m,chunk],/belong/);
+ await reject('source text immutable',"update artifact_chunk set text_excerpt='Changed' where chunk_id=$1",[chunk],/immutable/);
+ await reject('source text deletion blocked','delete from artifact_chunk where chunk_id=$1',[chunk],/immutable/);
+ await reject('ready source cannot add passages',"insert into artifact_chunk(artifact_id,text_excerpt) values ($1,'extra')",[source],/during extraction/);
+ await reject('source bytes immutable',"update document_source set original_bytes=decode('00','hex') where artifact_id=$1",[source],/immutable/);
+ await reject('source identity immutable',"update information_artifact set title='Changed' where artifact_id=$1",[source],/immutable/);
+ const otherGame=(await one("insert into wargame_game(name) values ('Other game') returning game_id")).game_id;
+ const otherSource=(await one("insert into information_artifact(game_id,artifact_type,processing_status) values ($1,'other','ready') returning artifact_id",[otherGame])).artifact_id;
+ const otherChunk=(await one("insert into artifact_chunk(artifact_id,text_excerpt) values ($1,'Foreign') returning chunk_id",[otherSource])).chunk_id;
+ await reject('cross-game passage rejected','insert into submission_citation(package_id,chunk_id) values ($1,$2)',[p2,otherChunk],/same game/);
+ await rows("update move set status='submitted' where move_id=$1",[m2]);
+ await rows("update turn_submission_package set receipt_status='submitted' where package_id=$1",[p2]);
+ await rows("update turn_submission_package set receipt_status='locked' where package_id=$1",[p2]);
+ await reject('locked citation deletion blocked','delete from submission_citation where citation_id=$1',[citation],/Locked package/);
+ await reject('locked citation update blocked','update submission_citation set move_id=NULL where citation_id=$1',[citation],/Locked package/);
+ ok((await one("select count(*)::int n from artifact_chunk where to_tsvector('english',coalesce(text_excerpt,'')) @@ websearch_to_tsquery('english','supply')")).n===1,'full-text passage search works');
  const rules=JSON.parse(fs.readFileSync(path.join(root,'workflow_rules.json'),'utf8'));
  const transitions=await rows('select * from workflow_transition');
  ok(transitions.length===Object.values(rules).flatMap(x=>Object.values(x).flat()).length && transitions.every(x=>rules[x.entity][x.from_status].includes(x.to_status)),'SQL/Python transition matrices agree');

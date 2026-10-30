@@ -1,30 +1,23 @@
 # Development roadmap
 
-This repository begins with the Wargame database and Docker foundation.
+## Implemented
 
-## Foundation included
+- PostgreSQL workflow guards and immutable published state/outcomes.
+- JSON turn-card validation, transactional import and localhost review interface.
+- Neo4j projection and explicit graph refresh.
+- PDF/DOCX/PPTX shared-material upload, original preservation and source revisions.
+- Native text extraction, English scanned-PDF OCR and passage-level source locations.
+- Full-text passage search and citation attachment to packages or moves.
+- Additive database migration, locked citation guards and Neo4j evidence paths.
+- Synthetic unit, SQL-engine and real-service Docker integration checks.
 
-- PostgreSQL schema, workflow triggers, immutability rules.
-- Turn Card, RFI and adjudication JSON contracts.
-- Turn Card CLI validation and graph projection.
-- Docker Compose services, synthetic demo and end-to-end smoke-test command.
-- GitHub Actions for unit/contract checks, PostgreSQL engine checks and live
-  containerized PostgreSQL-to-Neo4j integration.
+## Next work
 
-## Application work to implement next
+1. Existing-card editing/revision workflows and player/white-cell permissions.
+2. RFI ownership/response screens and adjudication outcome/effect entry.
+3. AI-assisted answers with citations and reviewed entity/claim extraction.
+4. Additional domain concepts exposed by actual source materials.
+5. Background extraction workers, production identity, database roles and backups.
+6. OneNote ingestion and broader document-layout support as needed.
 
-1. Transactional Turn Card ingestion API with reviewed import mapping.
-2. Player and white-cell forms with role-based visibility and permissions.
-3. RFI ownership, responses and status workflow.
-4. Adjudication review, recorded rationale and outcome/effect entry.
-5. Versioned document ingestion from existing OneNote/PDF/DOCX records.
-6. Operational state-history and evidence views.
-7. Deployment-specific identity integration, production database roles and backups.
-
-A passing foundation test is not evidence that the future application features
-already exist. Only synthetic demonstration records are included.
-
-
-The Docker browser proof of concept now supports new JSON card import, review,
-transactional validation/save, and manual graph refresh. Next interface work: card
-editing with revisions, adjudication, authentication/roles, and document extraction.
+Shared reference text does not automatically become authoritative game state.

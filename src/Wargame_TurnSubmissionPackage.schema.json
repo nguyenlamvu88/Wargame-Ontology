@@ -386,6 +386,14 @@
               "format": "uuid"
             },
             "uniqueItems": true
+          },
+          "cited_chunk_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
           }
         }
       }
@@ -431,6 +439,14 @@
         "string",
         "null"
       ]
+    },
+    "cited_chunk_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "uniqueItems": true
     }
   },
   "allOf": [
